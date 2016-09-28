@@ -1,0 +1,27 @@
+{
+  "name": "serverless-messenger-boilerplate",
+  "version": "1.0.0",
+  "description": "A boilerplate for serverless Messenger bots by SC5 Online",
+  "main": "handler.js",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "dotenv": "^2.0.0",
+    "request": "^2.75.0",
+    "request-promise": "^4.1.1"
+  },
+  "devDependencies": {
+    "serverless-offline": "git+https://github.com/dherault/serverless-offline.git/#serverless_v1",
+    "serverless-plugin-write-env-vars": "^1.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "serverless",
+    "messenger",
+    "bot",
+    "aws"
+  ],
+  "author": "Mikael Puittinen",
+  "license": "MIT"
+}
