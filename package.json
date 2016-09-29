@@ -10,11 +10,6 @@
     "request-promise": "^4.1.1"
   },
   "devDependencies": {
-    "eslint": "^3.6.1",
-    "eslint-config-airbnb": "^12.0.0",
-    "eslint-plugin-import": "^1.16.0",
-    "eslint-plugin-jsx-a11y": "^2.2.2",
-    "eslint-plugin-react": "^6.3.0",
     "serverless-offline": "git+https://github.com/dherault/serverless-offline.git/#serverless_v1",
     "serverless-plugin-write-env-vars": "^1.0.1"
   },
