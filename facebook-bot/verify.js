@@ -14,7 +14,7 @@ function verify(verifyToken, challenge) {
   return Promise.reject(new Error('400 Bad Token'));
 }
 
-module.exports.handler = (event, context, cb) =>
+module.exports.handler = (event, cb) =>
   verify(event.query['hub.verify_token'], event.query['hub.challenge'])
     .then(response => cb(null, response))
     .then(null, err => cb(err));

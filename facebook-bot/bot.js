@@ -98,7 +98,7 @@ function receiveMessages(entries) {
     });
 }
 
-module.exports.handler = (event, context, cb) => {
+module.exports.handler = (event, cb) => {
   console.log(event.body);
   return receiveMessages(event.body.entry || [])
     .then(response => cb(null, response))

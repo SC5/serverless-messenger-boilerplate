@@ -6,8 +6,8 @@ const bot = require('./bot.js');
 module.exports.handler = (event, context, cb) => {
   console.log(event);
   if (event.method === 'GET') {
-    verify.handler(event, context, cb);
+    verify.handler(event, cb);
   } else {
-    bot.handler(event, context, cb);
+    bot.handler(event, cb);
   }
 };
