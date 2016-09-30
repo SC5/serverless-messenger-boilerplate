@@ -6,10 +6,13 @@
   "dependencies": {
     "bluebird": "^3.4.6",
     "dotenv": "^2.0.0",
+    "node-wit": "^4.1.0",
     "request": "^2.75.0",
     "request-promise": "^4.1.1"
   },
   "devDependencies": {
+    "aws-sdk": "^2.6.5",
+    "serverless-mocha-plugin": "git+https://github.com/SC5/serverless-mocha-plugin.git/#1.0",
     "serverless-offline": "git+https://github.com/dherault/serverless-offline.git/#serverless_v1",
     "serverless-plugin-write-env-vars": "^1.0.1"
   },
