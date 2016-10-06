@@ -22,3 +22,9 @@ _INSTRUCTIONS DRAFT_
 12. Open Facebook page created in step 5 and send message to it
 
 More detailed instructions for Facebook Messenger platform configuration can be found from https://developers.facebook.com/docs/messenger-platform/quickstart/
+
+_TODO_
+
+1. Session Store using DynamoDB
+2. Hook to wit.ai
+3. Mechanism for handling requests based on context from Wit.ai and generating response to user
