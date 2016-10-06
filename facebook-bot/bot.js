@@ -77,28 +77,25 @@ function receiveMessage(event) {
 
 function receiveMessages(entries) {
   let promise = Promise.resolve();
-  entries.map(entry => {
-    const messaging = entry.messaging || []
-    messaging.map(event => {
+
+  entries.map((entry) => {
+    const messaging = entry.messaging || [];
+    return messaging.map((event) => {
       let userId = event.sender.id;
       console.log('Read session');
       console.log(session);
       session.readSession('fb' + userId)
       .then((session) => {
-        console.log(session);
-        // sender.id < 0 == test
-        if (event.sender.id > 0) {
-          promise = promise.then(() => {
-            if (event.postback) {
-              return receivePostback(event)
-            } else if (event.optin) {
-              return receiveOptIn(event)
-            } else {
-              return receiveMessage(event)
-            }
-          });
-        }
+        promise = promise.then(() => {
+          if (event.postback) {
+            return receivePostback(event);
+          } else if (event.optin) {
+            return receiveOptIn(event);
+          }
+          return receiveMessage(event);
+        });
       });
+      return promise;
     });
   });
 
