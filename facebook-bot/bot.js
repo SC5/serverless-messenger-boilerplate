@@ -74,12 +74,12 @@ function receiveMessage(event) {
   return null;
 }
 
-function receiveMessages(entries) {
+function receiveMessages(entriesData) {
   let promise = Promise.resolve();
-
-  entries.map((entry) => {
+  const entries = entriesData || [];
+  entries.forEach((entry) => {
     const messaging = entry.messaging || [];
-    return messaging.map((event) => {
+    messaging.forEach((event) => {
       let userId = event.sender.id;
       console.log('Read session');
       console.log(session);
@@ -94,7 +94,6 @@ function receiveMessages(entries) {
             return receiveMessage(event);
           });
         });
-      return promise;
     });
   });
 

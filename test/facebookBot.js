@@ -63,7 +63,7 @@ describe('facebookBot', () => {
             {
               messaging: [{
                 sender: {
-                  id: '-592003813'
+                  id: '-123456789'
                 },
                 message: {
                   text: 'Hello!'
