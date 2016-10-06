@@ -66,7 +66,6 @@ function receiveOptIn(event) {
 }
 
 function receiveMessage(event) {
-  console.log('Processing event:', event);
   if (event.sender && event.sender.id && event.message && event.message.text) {
     // Handle message
     // return sendTextMessage(event.sender.id, 'Hi! Why do you say ' + event.message.text + '?')
@@ -85,16 +84,16 @@ function receiveMessages(entries) {
       console.log('Read session');
       console.log(session);
       session.readSession('fb' + userId)
-      .then((session) => {
-        promise = promise.then(() => {
-          if (event.postback) {
-            return receivePostback(event);
-          } else if (event.optin) {
-            return receiveOptIn(event);
-          }
-          return receiveMessage(event);
+        .then((session) => {
+          promise = promise.then(() => {
+            if (event.postback) {
+              return receivePostback(event);
+            } else if (event.optin) {
+              return receiveOptIn(event);
+            }
+            return receiveMessage(event);
+          });
         });
-      });
       return promise;
     });
   });

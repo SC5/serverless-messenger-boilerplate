@@ -11,7 +11,7 @@
     "request-promise": "^4.1.1"
   },
   "devDependencies": {
-    "aws-sdk": "^2.6.5",
+    "aws-sdk": "^2.4.9",
     "serverless-mocha-plugin": "git+https://github.com/SC5/serverless-mocha-plugin.git/#1.0",
     "serverless-offline": "git+https://github.com/dherault/serverless-offline.git/#serverless_v1",
     "serverless-plugin-write-env-vars": "^1.0.1"

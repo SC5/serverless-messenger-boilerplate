@@ -4,7 +4,6 @@ const verify = require('./verify.js');
 const bot = require('./bot.js');
 
 module.exports.handler = (event, context, cb) => {
-  console.log(event);
   setEnvVars(event);
   if (event.method === 'GET') {
     verify.handler(event, cb);
