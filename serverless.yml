@@ -22,6 +22,7 @@ provider:
       Action:
       - dynamodb:Scan
       - dynamodb:Query
+      - dynamodb:GetItem
       - dynamodb:PutItem
       - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:*
