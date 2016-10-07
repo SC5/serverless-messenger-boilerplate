@@ -80,11 +80,14 @@ function receiveMessages(entriesData) {
   entries.forEach((entry) => {
     const messaging = entry.messaging || [];
     messaging.forEach((event) => {
-      let userId = event.sender.id;
+      const userId = event.sender.id;
+      session.writeSession({ id: userId });
+      console.log('userId', userId);
       console.log('Read session');
       console.log(session);
-      session.readSession('fb' + userId)
-        .then((session) => {
+      session.readSession(userId)
+        .then((sessionData) => {
+          console.log('sessionData', sessionData);
           promise = promise.then(() => {
             if (event.postback) {
               return receivePostback(event);
