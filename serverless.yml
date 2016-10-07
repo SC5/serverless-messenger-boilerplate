@@ -16,34 +16,20 @@ service: sc5-serverless-messenger-bot # NOTE: update this with your service name
 provider:
   name: aws
   runtime: nodejs4.3
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - dynamodb:Scan
+      - dynamodb:Query
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:*
 
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-
-# you can overwrite defaults here
-#defaults:
-#  stage: dev
-#  region: us-east-1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#  exclude:
-#    - exclude-me.js
-#  artifact: my-service-code.zip
+package:
+  exclude:
+    - test
 
 functions:
   facebookBot: 
@@ -70,16 +56,31 @@ functions:
 #      - sns: greeter-topic
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
 
+resources: 
+  Resources:
+    SessionsTable: 
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Delete
+      Properties: 
+        AttributeDefinitions: 
+          - 
+            AttributeName: id
+            AttributeType: S
+        KeySchema: 
+          - 
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput: 
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:service}-sessions-${opt:stage, self:provider.stage}
+#  Outputs:
+#    SessionsTable:
+#      Description: Session table for Messenger bot
+#      Value: TODO: define output value
 plugins:
   - serverless-offline
+  - serverless-mocha-plugin
+
+# TODO: webpack
