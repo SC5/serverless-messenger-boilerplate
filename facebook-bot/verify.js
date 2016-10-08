@@ -7,10 +7,11 @@ dotenv.config();
 
 function verify(verifyToken, challenge) {
   console.log('Verifying token', verifyToken, 'challenge', challenge);
-  console.log(process.env);
+  // console.log(process.env);
   if (verifyToken === process.env.FACEBOOK_BOT_VERIFY_TOKEN) {
     return Promise.resolve({ response: challenge });
   }
+
   return Promise.reject(new Error('400 Bad Token'));
 }
 

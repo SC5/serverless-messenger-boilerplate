@@ -3,6 +3,11 @@
 const verify = require('./verify.js');
 const bot = require('./bot.js');
 
+function setEnvVars(event) {
+  process.env.SERVERLESS_STAGE = event.stage;
+  process.env.SERVERLESS_PROJECT = 'sc5-serverless-messenger-bot';
+}
+
 module.exports.handler = (event, context, cb) => {
   setEnvVars(event);
   if (event.method === 'GET') {
@@ -11,8 +16,3 @@ module.exports.handler = (event, context, cb) => {
     bot.handler(event, cb);
   }
 };
-
-function setEnvVars(event) {
-  process.env.SERVERLESS_STAGE = event.stage;
-  process.env.SERVERLESS_PROJECT = 'sc5-serverless-messenger-bot';
-}

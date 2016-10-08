@@ -17,7 +17,7 @@ function sessionTable() {
 }
 
 function readSession(id) {
-  console.log('Read session', id);
+  // console.log('Read session', id);
   return new Promise((resolve, reject) => {
     const params = {
       Key: { id: id.toString() },
@@ -25,11 +25,11 @@ function readSession(id) {
       ConsistentRead: true
     };
 
-    console.log('params', params);
+    // console.log('params', params);
 
     dynamoDB.get(params, (err, data) => {
       // console.log('Dynamo:', AWS.config.region + '/' + sessionTable());
-      console.log(err, data);
+      // console.log(err, data);
 
       if (err) {
         return reject(err.toString());

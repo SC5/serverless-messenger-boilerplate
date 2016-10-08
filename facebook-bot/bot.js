@@ -4,6 +4,7 @@ const Promise = require('bluebird');
 const request = require('request-promise');
 const dotenv = require('dotenv').config();
 const session = require('./session.js');
+const wit = require('./wit-ai');
 
 function sendGenericMessage(recipientId) {
   const messageData = {
@@ -66,12 +67,15 @@ function receiveOptIn(event) {
 }
 
 function receiveMessage(event) {
-  if (event.sender && event.sender.id && event.message && event.message.text) {
-    // Handle message
-    // return sendTextMessage(event.sender.id, 'Hi! Why do you say ' + event.message.text + '?')
-    return sendGenericMessage(event.sender.id);
-  }
-  return null;
+  // if (event.sender && event.sender.id && event.message && event.message.text) {
+  //   // Handle message
+  //   // return sendTextMessage(event.sender.id, 'Hi! Why do you say ' + event.message.text + '?')
+  //   return sendGenericMessage(event.sender.id);
+  // }
+  // return null;
+  return wit.send(event)
+    .then(result => sendTextMessage(event.sender.id, result.text))
+    .catch(error => console.log(error.message));
 }
 
 function receiveMessages(entriesData) {
@@ -81,13 +85,14 @@ function receiveMessages(entriesData) {
     const messaging = entry.messaging || [];
     messaging.forEach((event) => {
       const userId = event.sender.id;
-      session.writeSession({ id: userId });
+      session.writeSession({ id: userId.toString() });
       console.log('userId', userId);
       console.log('Read session');
       console.log(session);
       session.readSession(userId)
         .then((sessionData) => {
           console.log('sessionData', sessionData);
+          // console.log('event', event)
           promise = promise.then(() => {
             if (event.postback) {
               return receivePostback(event);

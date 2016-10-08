@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "description": "A boilerplate for serverless Messenger bots by SC5 Online",
   "main": "handler.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SC5/serverless-messenger-boilerplate.git"
+  },
   "dependencies": {
     "bluebird": "^3.4.6",
     "dotenv": "^2.0.0",
-    "node-wit": "^4.1.0",
+    "node-wit": "git+https://github.com/laardee/node-wit.git",
     "request": "^2.75.0",
     "request-promise": "^4.1.1"
   },
@@ -17,7 +21,7 @@
     "serverless-plugin-write-env-vars": "^1.0.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "serverless invoke test"
   },
   "keywords": [
     "serverless",

@@ -66,7 +66,7 @@ describe('facebookBot', () => {
                   id: ''
                 },
                 message: {
-                  text: 'Hello!'
+                  text: 'What is your favorite color?'
                 }
               }]
             }
@@ -74,7 +74,7 @@ describe('facebookBot', () => {
         }
       }, (err, response) => {
         console.log([err, response]);
-        done();
+        done(err);
       });
     });
   });
