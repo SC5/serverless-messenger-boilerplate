@@ -39,14 +39,20 @@ function sendGenericMessage(recipientId) {
   });
 }
 
-function sendTextMessage(recipientId, text) {
+function sendTextMessage(recipientId, result) {
+  const message = { text: result.text };
+
+  if (result.quickreplies) {
+    Object.assign(message, { quick_replies: result.quickreplies.map(x => ({ title: x, content_type: 'text', payload: 'empty' }))} );
+  }
+
   return request({
     url: 'https://graph.facebook.com/v2.6/me/messages',
     qs: { access_token: process.env.FACEBOOK_BOT_PAGE_ACCESS_TOKEN },
     method: 'POST',
     json: {
       recipient: { id: recipientId },
-      message: { text }
+      message
     }
   });
 }
@@ -74,7 +80,7 @@ function receiveMessage(event) {
   // }
   // return null;
   return wit.send(event)
-    .then(result => sendTextMessage(event.sender.id, result.text))
+    .then(result => sendTextMessage(event.sender.id, result))
     .catch(error => console.log(error.message));
 }
 

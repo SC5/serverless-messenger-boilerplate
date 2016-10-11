@@ -66,7 +66,7 @@ describe('facebookBot', () => {
                   id: ''
                 },
                 message: {
-                  text: 'What is your favorite color?'
+                  text: 'How is the weather in Rome?'
                 }
               }]
             }
