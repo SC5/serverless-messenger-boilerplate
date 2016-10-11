@@ -10,6 +10,7 @@
   "dependencies": {
     "bluebird": "^3.4.6",
     "dotenv": "^2.0.0",
+    "moment": "^2.15.1",
     "node-wit": "git+https://github.com/laardee/node-wit.git",
     "request": "^2.75.0",
     "request-promise": "^4.1.1"
