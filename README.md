@@ -3,14 +3,14 @@ Serverless messenger bot boilerplate
 
 _INSTRUCTIONS DRAFT_
 
-* INSTALL BOILERPLATE *
+**INSTALL BOILERPLATE**
 
 1. Run `serverless install --url https://github.com/SC5/serverless-messenger-boilerplate.git`
 2. Run `npm install`
 3. Rename example.env to .env and fill in FACEBOOK_BOT_VERIFY_TOKEN
 4. Run `serverless deploy` then copy the GET endpoint url to clipboard
 
-* SETUP FACEBOOK APP *
+**SETUP FACEBOOK APP**
 
 1. In Facebook Developer site create new Facebook application and page
   * Create Facebook application -> https://developers.facebook.com/quickstarts/?platform=web
@@ -28,12 +28,21 @@ _INSTRUCTIONS DRAFT_
 
 More detailed instructions for Facebook Messenger platform configuration can be found from https://developers.facebook.com/docs/messenger-platform/quickstart/
 
-* SETUP WIT.AI [TBD] *
+**SETUP WIT.AI [TBD]**
 
-1. Register to WIT.AI
-2. -> Quick start
+1. Register to wit.ai
+2. Click + icon located in top menu to create a new app
+3. Type in app name and description
+4. If you wish you can change language and data privacy
+5. Select _+ Create App_.
+6. Select _+ Create a story_
 
-* SETUP OPEN WEATHER MAP *
+
+X. Select settings
+X. Copy App ID
+X. Paste token to `.env` file as `WIT_AI_TOKEN`
+
+**SETUP OPEN WEATHER MAP**
 
 1. Register to Open Weather Map
 2. Click "Hello username" in the top menu bar
@@ -43,9 +52,11 @@ More detailed instructions for Facebook Messenger platform configuration can be 
 6. Paste token to `.env` file as `WEATHER_API_TOKEN`
 
 
-* TESTS [TBD] *
+**TESTS [TBD]**
 1. Define FACEBOOK_ID_FOR_TESTS
 2. Run `npm test`
+
+
 
 _TODO_
 
