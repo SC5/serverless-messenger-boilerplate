@@ -2,7 +2,6 @@
 
 const Promise = require('bluebird');
 const AWS = require('aws-sdk');
-const crypto = require('crypto');
 
 // Initialize AWS and DynamoDB (for session access)
 if (typeof AWS.config.region !== 'string') {
@@ -12,12 +11,19 @@ if (typeof AWS.config.region !== 'string') {
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
+/**
+ * returns session table name
+ * @returns {string}
+ */
 function sessionTable() {
   return `${process.env.SERVERLESS_PROJECT}-sessions-${process.env.SERVERLESS_STAGE}`;
 }
 
+/**
+ * Reads session from DynamoDB
+ * @param id
+ */
 function readSession(id) {
-  // console.log('Read session', id);
   return new Promise((resolve, reject) => {
     const params = {
       Key: { id: id.toString() },
@@ -25,12 +31,7 @@ function readSession(id) {
       ConsistentRead: true
     };
 
-    // console.log('params', params);
-
     dynamoDB.get(params, (err, data) => {
-      // console.log('Dynamo:', AWS.config.region + '/' + sessionTable());
-      // console.log(err, data);
-
       if (err) {
         return reject(err.toString());
       }
@@ -47,8 +48,12 @@ function readSession(id) {
   });
 }
 
+/**
+ * Writes session to DynamoDB
+ * @param session
+ */
 function writeSession(session) {
-  return new Promise((success, reject) => {
+  return new Promise((resolve, reject) => {
     if (!session.id) {
       reject('NO_SESSION_ID');
     }
@@ -65,10 +70,12 @@ function writeSession(session) {
         return reject(err);
       }
 
-      return success(session);
+      return resolve(session);
     });
   });
 }
 
-module.exports.readSession = readSession;
-module.exports.writeSession = writeSession;
+module.exports = {
+  readSession,
+  writeSession
+};

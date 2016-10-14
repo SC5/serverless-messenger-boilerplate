@@ -2,9 +2,8 @@
 
 const Promise = require('bluebird');
 const request = require('request-promise');
-const dotenv = require('dotenv').config();
 const session = require('./session.js');
-const wit = require('./wit-ai');
+const witAi = require('./wit-ai');
 
 function sendGenericMessage(recipientId) {
   const messageData = {
@@ -39,6 +38,11 @@ function sendGenericMessage(recipientId) {
   });
 }
 
+/**
+ * Sends text message to recipient
+ * @param recipientId
+ * @param result
+ */
 function sendTextMessage(recipientId, result) {
   const message = { text: result.text };
 
@@ -59,6 +63,10 @@ function sendTextMessage(recipientId, result) {
   });
 }
 
+/**
+ * Handles postback message
+ * @param event
+ */
 function receivePostback(event) {
   if (event.postback.payload === 'like') {
     return sendTextMessage(event.sender.id, '^_^ I\'m very happy to hear that!');
@@ -66,6 +74,11 @@ function receivePostback(event) {
   return sendTextMessage(event.sender.id, 'Too bad :-(');
 }
 
+/**
+ * Handles opt in message
+ * @param event
+ * @returns {null}
+ */
 function receiveOptIn(event) {
   if (event.sender && event.sender.id) {
     console.log('Received opt-in from user', event.sender.id, 'with ref', event.optin.ref);
@@ -74,18 +87,35 @@ function receiveOptIn(event) {
   return null;
 }
 
+/**
+ * Handles text message and passes it to wit.ai
+ * @param event
+ * @returns {Promise.<TResult>}
+ */
 function receiveMessage(event) {
-  // if (event.sender && event.sender.id && event.message && event.message.text) {
-  //   // Handle message
-  //   // return sendTextMessage(event.sender.id, 'Hi! Why do you say ' + event.message.text + '?')
-  //   return sendGenericMessage(event.sender.id);
-  // }
-  // return null;
-  return wit.send(event)
+  return witAi(event)
     .then(result => sendTextMessage(event.sender.id, result))
     .catch(error => console.error('wit send error', error.message));
 }
 
+/**
+ * Example generic message
+ * @returns {null}
+ */
+function receiveMessageGeneric() {
+  if (event.sender && event.sender.id && event.message && event.message.text) {
+    // Handle message
+    // return sendTextMessage(event.sender.id, 'Hi! Why do you say ' + event.message.text + '?')
+    return sendGenericMessage(event.sender.id);
+  }
+  return null;
+}
+
+/**
+ * Message handler
+ * @param entriesData
+ * @returns {Promise.<TResult>}
+ */
 function receiveMessages(entriesData) {
   let promise = Promise.resolve();
   const entries = entriesData || [];
@@ -95,10 +125,6 @@ function receiveMessages(entriesData) {
       const userId = event.sender.id;
       session.writeSession({ id: userId.toString() })
         .then((sessionData) => {
-          // console.log('userId', userId);
-          // console.log('Read session');
-          // console.log(session);
-          // console.log('sessionData', sessionData);
           const eventData = Object.assign({}, event, sessionData);
           promise = promise.then(() => {
             if (eventData.postback) {
@@ -120,8 +146,8 @@ function receiveMessages(entriesData) {
     });
 }
 
-module.exports.handler = (event, cb) => {
-  return receiveMessages(event.body.entry || [])
+module.exports.handler = (event, cb) =>
+  receiveMessages(event.body.entry || [])
     .then(response => cb(null, response))
     .then(null, err => cb(err));
-};
+

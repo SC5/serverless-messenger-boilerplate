@@ -28,7 +28,7 @@ _INSTRUCTIONS DRAFT_
 
 More detailed instructions for Facebook Messenger platform configuration can be found from https://developers.facebook.com/docs/messenger-platform/quickstart/
 
-* SETUP WIT.AI *
+* SETUP WIT.AI [TBD] *
 
 1. Register to WIT.AI
 2. -> Quick start
@@ -42,6 +42,10 @@ More detailed instructions for Facebook Messenger platform configuration can be 
 5. Copy the created token
 6. Paste token to `.env` file as `WEATHER_API_TOKEN`
 
+
+* TESTS [TBD] *
+1. Define FACEBOOK_ID_FOR_TESTS
+2. Run `npm test`
 
 _TODO_
 

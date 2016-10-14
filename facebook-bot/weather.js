@@ -3,14 +3,27 @@
 const request = require('request-promise');
 const moment = require('moment');
 
+/**
+ * Converts Kelvins to Celsius
+ * @param k
+ */
 const kelvinToCelsius = k => Math.round(k - 273.15);
 
+/**
+ * Maps weather data
+ * @param data
+ */
 const mapWeatherData = data => ({
   temperature: kelvinToCelsius(data.main.temp),
   description: data.weather[0].description,
   name: data.name
 });
 
+/**
+ * Gets current weather for location
+ * @param locationName
+ * @returns {*}
+ */
 const weatherByLocationName = (locationName) => {
   const options = {
     uri: 'http://api.openweathermap.org/data/2.5/weather',
@@ -25,6 +38,12 @@ const weatherByLocationName = (locationName) => {
     .then(mapWeatherData);
 };
 
+/**
+ * Gets forecast for location
+ * @param locationName
+ * @param datetime
+ * @returns {*}
+ */
 const forecastByLocationName = (locationName, datetime) => {
   const time = moment(datetime);
   const timestampInSecondsStart = time.valueOf() / 1000;

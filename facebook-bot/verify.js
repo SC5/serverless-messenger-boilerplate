@@ -1,10 +1,13 @@
 'use strict';
 
 const Promise = require('bluebird');
-const dotenv = require('dotenv');
 
-dotenv.config();
-
+/**
+ * Verifies token when registering Facebook app
+ * @param verifyToken
+ * @param challenge
+ * @returns {*}
+ */
 function verify(verifyToken, challenge) {
   console.log('Verifying token', verifyToken, 'challenge', challenge);
   // console.log(process.env);

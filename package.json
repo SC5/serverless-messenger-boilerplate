@@ -22,7 +22,7 @@
     "serverless-plugin-write-env-vars": "^1.0.1"
   },
   "scripts": {
-    "test": "serverless invoke test"
+    "test": "SLS_DEBUG=true serverless invoke test"
   },
   "keywords": [
     "serverless",

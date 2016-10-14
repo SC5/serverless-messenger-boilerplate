@@ -4,14 +4,18 @@ const Wit = require('node-wit').Wit;
 const moment = require('moment');
 const weather = require('./weather');
 
-const send = event => new Promise((resolveMessage, rejectMessage) => {
+/**
+ * Handles wit.ai integration
+ * @param event
+ */
+const init = event => new Promise((resolveMessage, rejectMessage) => {
   if (event.sender && event.sender.id && event.message && event.message.text) {
     const sessionId = `${event.id}-${event.updated}`;
     const context0 = {};
     const client = new Wit({
       accessToken: process.env.WIT_AI_TOKEN,
       actions: {
-        send: (request, response) => new Promise((resolve, reject) => {
+        send: (request, response) => new Promise(() => {
           resolveMessage(response);
         }),
         getWeather: (data) => new Promise((resolve, reject) => {
@@ -52,6 +56,4 @@ const send = event => new Promise((resolveMessage, rejectMessage) => {
   }
 });
 
-module.exports = {
-  send
-};
+module.exports = init;
