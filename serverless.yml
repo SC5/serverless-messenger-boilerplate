@@ -38,6 +38,7 @@ functions:
       - http:
           path: facebook-bot
           method: get
+          integration: lambda
           response:
             headers:
               Content-Type: "'text/html'"
@@ -45,6 +46,7 @@ functions:
       - http:
           path: facebook-bot 
           method: post
+          integration: lambda
   
 #    you can add any of the following events
 #    events:
