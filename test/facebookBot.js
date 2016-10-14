@@ -16,7 +16,7 @@ const liveFunction = {
 
 const wrapped = lambdaWrapper.wrap(mod, {handler: 'handler'});
 
-describe('facebookBot', () => {
+describe('Facebook bot service', () => {
   before((done) => {
 //  lambdaWrapper.init(liveFunction); // Run the deployed lambda
 
@@ -54,6 +54,31 @@ describe('facebookBot', () => {
   });
 
   describe('Messaging', () => {
+
+    it('Tests current weather', (done) => {
+      wrapped.run({
+        method: 'POST',
+        stage: 'dev',
+        body: {
+          entry: [
+            {
+              messaging: [{
+                sender: {
+                  id: process.env.FACEBOOK_ID_FOR_TESTS
+                },
+                message: {
+                  text: 'How will be the weather?'
+                }
+              }]
+            }
+          ]
+        }
+      }, (err, response) => {
+        // console.log(err, response);
+        done(err);
+      });
+    });
+
     it('Tests current weather in London', (done) => {
       wrapped.run({
         method: 'POST',
