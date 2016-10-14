@@ -66,21 +66,16 @@ resources:
       DeletionPolicy: Delete
       Properties: 
         AttributeDefinitions: 
-          - 
-            AttributeName: id
+          - AttributeName: id
             AttributeType: S
         KeySchema: 
-          - 
-            AttributeName: id
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput: 
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:service}-sessions-${opt:stage, self:provider.stage}
-#  Outputs:
-#    SessionsTable:
-#      Description: Session table for Messenger bot
-#      Value: TODO: define output value
+
 plugins:
   - serverless-offline
   - serverless-mocha-plugin
