@@ -1,6 +1,5 @@
 'use strict';
 
-const Promise = require('bluebird');
 const request = require('request-promise');
 const session = require('./session.js');
 const witAi = require('./wit-ai');

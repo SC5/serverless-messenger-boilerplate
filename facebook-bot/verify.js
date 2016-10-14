@@ -1,7 +1,5 @@
 'use strict';
 
-const Promise = require('bluebird');
-
 /**
  * Verifies token when registering Facebook app
  * @param verifyToken
@@ -9,8 +7,6 @@ const Promise = require('bluebird');
  * @returns {*}
  */
 function verify(verifyToken, challenge) {
-  console.log('Verifying token', verifyToken, 'challenge', challenge);
-  // console.log(process.env);
   if (verifyToken === process.env.FACEBOOK_BOT_VERIFY_TOKEN) {
     return Promise.resolve({ response: challenge });
   }

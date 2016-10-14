@@ -1,11 +1,10 @@
 'use strict';
 
-const Promise = require('bluebird');
 const AWS = require('aws-sdk');
 
 // Initialize AWS and DynamoDB (for session access)
 if (typeof AWS.config.region !== 'string') {
-  console.log('No region found, defaulting to us-east-1');
+  console.warn('No region found, defaulting to us-east-1');
   AWS.config.update({ region: 'us-east-1' });
 }
 

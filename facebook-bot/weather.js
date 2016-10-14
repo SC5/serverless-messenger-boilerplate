@@ -16,7 +16,7 @@ const kelvinToCelsius = k => Math.round(k - 273.15);
 const mapWeatherData = data => ({
   temperature: kelvinToCelsius(data.main.temp),
   description: data.weather[0].description,
-  name: data.name
+  location: data.name
 });
 
 /**

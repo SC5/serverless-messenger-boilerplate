@@ -5,6 +5,7 @@
 
 const mod = require('../facebook-bot/handler.js');
 const mochaPlugin = require('serverless-mocha-plugin');
+
 const lambdaWrapper = mochaPlugin.lambdaWrapper;
 const expect = mochaPlugin.chai.expect;
 
@@ -37,7 +38,7 @@ describe('facebookBot', () => {
     });
 
     it('Gives an error given an invalid verify token', (done) => {
-      let challenge = Date.now();
+      const challenge = Date.now();
       wrapped.run({
         method: 'GET',
         query: {
@@ -72,7 +73,7 @@ describe('facebookBot', () => {
           ]
         }
       }, (err, response) => {
-        console.log(err, response);
+        // console.log(err, response);
         done(err);
       });
     });
@@ -96,7 +97,7 @@ describe('facebookBot', () => {
           ]
         }
       }, (err, response) => {
-        console.log(err, response);
+        // console.log(err, response);
         done(err);
       });
     });

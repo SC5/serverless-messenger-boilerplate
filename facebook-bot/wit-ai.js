@@ -11,7 +11,7 @@ const weather = require('./weather');
 const init = event => new Promise((resolveMessage, rejectMessage) => {
   if (event.sender && event.sender.id && event.message && event.message.text) {
     const sessionId = `${event.id}-${event.updated}`;
-    const context0 = {};
+    const context = {};
     const client = new Wit({
       accessToken: process.env.WIT_AI_TOKEN,
       actions: {
@@ -27,8 +27,7 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
           if (datetime) {
             weather.forecastByLocationName(location, datetime)
               .then((weatherData) => {
-                const w = `${weatherData.description} and ${weatherData.temperature}°C`;
-                const contextData = Object.assign({}, context, { weather: w, location: weatherData.name });
+                const contextData = Object.assign({}, context, weatherData);
                 if (datetime) {
                   Object.assign(contextData, { datetime: moment(datetime).calendar().toLowerCase() });
                 }
@@ -38,8 +37,7 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
           } else {
             weather.weatherByLocationName(location)
               .then((weatherData) => {
-                const w = `${weatherData.description} and ${weatherData.temperature}°C`;
-                const contextData = Object.assign({}, context, { weather: w, location: weatherData.name });
+                const contextData = Object.assign({}, context, weatherData);
                 if (datetime) {
                   Object.assign(contextData, { datetime: moment(datetime).calendar().toLowerCase() });
                 }
@@ -50,7 +48,7 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
         })
       }
     });
-    client.runActions(sessionId, event.message.text, context0);
+    client.runActions(sessionId, event.message.text, context);
   } else {
     rejectMessage('wit ai failed');
   }
