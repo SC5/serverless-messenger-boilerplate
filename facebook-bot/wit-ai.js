@@ -1,18 +1,17 @@
 'use strict';
 
 const Wit = require('node-wit').Wit;
-const request = require('request-promise');
 const moment = require('moment');
+const weather = require('./weather');
 
 const send = event => new Promise((resolveMessage, rejectMessage) => {
   if (event.sender && event.sender.id && event.message && event.message.text) {
-    const sessionId = `${event.sender.id}-${moment().valueOf()}`; // NOTICE!!, session id must differ
+    const sessionId = `${event.id}-${event.updated}`;
     const context0 = {};
     const client = new Wit({
       accessToken: process.env.WIT_AI_TOKEN,
       actions: {
         send: (request, response) => new Promise((resolve, reject) => {
-          console.log('send', JSON.stringify(response));
           resolveMessage(response);
         }),
         getWeather: (data) => new Promise((resolve, reject) => {
@@ -21,16 +20,29 @@ const send = event => new Promise((resolveMessage, rejectMessage) => {
           const location = data.entities.location[0].value;
           const datetime = data.entities.datetime ? data.entities.datetime[0].value : null;
 
-          weatherByLocationName(location)
-            .then((weather) => {
-              const w = `${weather.description} and ${kelvinToCelsius(weather.temperature)}°C`;
-              Object.assign(context, { weather: w, location: weather.name });
-              if (datetime) {
-                Object.assign(context, { datetime: moment(datetime).calendar().toLowerCase() });
-              }
-              resolve(context);
-            })
-            .catch(reject);
+          if (datetime) {
+            weather.forecastByLocationName(location, datetime)
+              .then((weatherData) => {
+                const w = `${weatherData.description} and ${weatherData.temperature}°C`;
+                const contextData = Object.assign({}, context, { weather: w, location: weatherData.name });
+                if (datetime) {
+                  Object.assign(contextData, { datetime: moment(datetime).calendar().toLowerCase() });
+                }
+                resolve(contextData);
+              })
+              .catch(reject);
+          } else {
+            weather.weatherByLocationName(location)
+              .then((weatherData) => {
+                const w = `${weatherData.description} and ${weatherData.temperature}°C`;
+                const contextData = Object.assign({}, context, { weather: w, location: weatherData.name });
+                if (datetime) {
+                  Object.assign(contextData, { datetime: moment(datetime).calendar().toLowerCase() });
+                }
+                resolve(contextData);
+              })
+              .catch(reject);
+          }
         })
       }
     });
@@ -39,44 +51,6 @@ const send = event => new Promise((resolveMessage, rejectMessage) => {
     rejectMessage('wit ai failed');
   }
 });
-
-const kelvinToCelsius = (k) => Math.round(k - 273.15);
-
-const weatherByLocationName = (locationName) => {
-  const options = {
-    uri: 'http://api.openweathermap.org/data/2.5/weather',
-    qs: {
-      q: locationName,
-      APPID: process.env.WEATHER_API_TOKEN
-    },
-    json: true
-  };
-
-  return request(options)
-    .then(data => ({
-      temperature: data.main.temp,
-      description: data.weather[0].description,
-      name: data.name
-    }));
-};
-
-const forecastByLocationName = (locationName, datetime) => {
-  const options = {
-    uri: 'http://api.openweathermap.org/data/2.5/forecast',
-    qs: {
-      q: locationName,
-      APPID: process.env.WEATHER_API_TOKEN
-    },
-    json: true
-  };
-
-  return request(options)
-    .then(data => ({
-      temperature: data.main.temp,
-      description: data.weather[0].description,
-      name: data.name
-    }));
-}
 
 module.exports = {
   send

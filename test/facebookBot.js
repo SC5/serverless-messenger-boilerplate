@@ -13,7 +13,7 @@ const liveFunction = {
   lambdaFunction: `${process.env.SERVERLESS_PROJECT}-facebookBot`
 };
 
-const wrapped = lambdaWrapper.wrap(mod, { handler: 'handler' });
+const wrapped = lambdaWrapper.wrap(mod, {handler: 'handler'});
 
 describe('facebookBot', () => {
   before((done) => {
@@ -53,8 +53,7 @@ describe('facebookBot', () => {
   });
 
   describe('Messaging', () => {
-    it('Hello', (done) => {
-      let challenge = Date.now();
+    it('Tests current weather in London', (done) => {
       wrapped.run({
         method: 'POST',
         stage: 'dev',
@@ -63,17 +62,41 @@ describe('facebookBot', () => {
             {
               messaging: [{
                 sender: {
-                  id: ''
+                  id: process.env.FACEBOOK_ID_FOR_TESTS
                 },
                 message: {
-                  text: 'How will be the weather in Rome?'
+                  text: 'How will be the weather in London?'
                 }
               }]
             }
           ]
         }
       }, (err, response) => {
-        console.log([err, response]);
+        console.log(err, response);
+        done(err);
+      });
+    });
+
+    it('Tests tomorrows forecast in London', (done) => {
+      wrapped.run({
+        method: 'POST',
+        stage: 'dev',
+        body: {
+          entry: [
+            {
+              messaging: [{
+                sender: {
+                  id: process.env.FACEBOOK_ID_FOR_TESTS
+                },
+                message: {
+                  text: 'How will be the weather in London tomorrow?'
+                }
+              }]
+            }
+          ]
+        }
+      }, (err, response) => {
+        console.log(err, response);
         done(err);
       });
     });

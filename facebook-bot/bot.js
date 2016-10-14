@@ -43,7 +43,9 @@ function sendTextMessage(recipientId, result) {
   const message = { text: result.text };
 
   if (result.quickreplies) {
-    Object.assign(message, { quick_replies: result.quickreplies.map(x => ({ title: x, content_type: 'text', payload: 'empty' }))} );
+    Object.assign(message, {
+      quick_replies: result.quickreplies.map(x => ({ title: x, content_type: 'text', payload: 'empty' }))
+    });
   }
 
   return request({
@@ -81,7 +83,7 @@ function receiveMessage(event) {
   // return null;
   return wit.send(event)
     .then(result => sendTextMessage(event.sender.id, result))
-    .catch(error => console.log(error.message));
+    .catch(error => console.error('wit send error', error.message));
 }
 
 function receiveMessages(entriesData) {
@@ -91,21 +93,20 @@ function receiveMessages(entriesData) {
     const messaging = entry.messaging || [];
     messaging.forEach((event) => {
       const userId = event.sender.id;
-      session.writeSession({ id: userId.toString() });
-      console.log('userId', userId);
-      console.log('Read session');
-      console.log(session);
-      session.readSession(userId)
+      session.writeSession({ id: userId.toString() })
         .then((sessionData) => {
-          console.log('sessionData', sessionData);
-          // console.log('event', event)
+          // console.log('userId', userId);
+          // console.log('Read session');
+          // console.log(session);
+          // console.log('sessionData', sessionData);
+          const eventData = Object.assign({}, event, sessionData);
           promise = promise.then(() => {
-            if (event.postback) {
-              return receivePostback(event);
-            } else if (event.optin) {
-              return receiveOptIn(event);
+            if (eventData.postback) {
+              return receivePostback(eventData);
+            } else if (eventData.optin) {
+              return receiveOptIn(eventData);
             }
-            return receiveMessage(event);
+            return receiveMessage(eventData);
           });
         });
     });
@@ -120,7 +121,6 @@ function receiveMessages(entriesData) {
 }
 
 module.exports.handler = (event, cb) => {
-  console.log(event.body);
   return receiveMessages(event.body.entry || [])
     .then(response => cb(null, response))
     .then(null, err => cb(err));
