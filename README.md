@@ -1,5 +1,4 @@
-# serverless-messenger-boilerplate
-Serverless messenger bot boilerplate
+# Serverless messenger bot boilerplate
 
 _INSTRUCTIONS DRAFT_
 
@@ -39,7 +38,9 @@ More detailed instructions for Facebook Messenger platform configuration can be 
 
 
 X. Select settings
+
 X. Copy App ID
+
 X. Paste token to `.env` file as `WIT_AI_TOKEN`
 
 **SETUP OPEN WEATHER MAP**
