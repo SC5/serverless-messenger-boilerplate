@@ -1,8 +1,19 @@
 {
   "name": "serverless-messenger-boilerplate",
   "version": "1.0.0",
-  "description": "A boilerplate for serverless Messenger bots by SC5 Online",
-  "main": "handler.js",
+  "description": "A boilerplate for Serverless Messenger bots by SC5 Online",
+  "main": "facebook-bot/handler.js",
+  "keywords": [
+    "serverless",
+    "messenger",
+    "bot",
+    "aws"
+  ],
+  "author": "Mikael Puittinen",
+  "contributors": [
+    "Eetu Tuomala"
+  ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/SC5/serverless-messenger-boilerplate.git"
@@ -15,20 +26,12 @@
     "request-promise": "^4.1.1"
   },
   "devDependencies": {
-    "aws-sdk": "^2.4.9",
+    "aws-sdk": "^2.6.3",
     "serverless-mocha-plugin": "git+https://github.com/SC5/serverless-mocha-plugin.git/#1.0",
     "serverless-offline": "git+https://github.com/dherault/serverless-offline.git/#serverless_v1",
     "serverless-plugin-write-env-vars": "^1.0.1"
   },
   "scripts": {
     "test": "SLS_DEBUG=true serverless invoke test"
-  },
-  "keywords": [
-    "serverless",
-    "messenger",
-    "bot",
-    "aws"
-  ],
-  "author": "Mikael Puittinen",
-  "license": "MIT"
+  }
 }

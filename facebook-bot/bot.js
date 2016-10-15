@@ -92,6 +92,10 @@ function receiveOptIn(event) {
  * @returns {Promise.<TResult>}
  */
 function receiveMessage(event) {
+  // if (event.sender && event.sender.id && event.message && event.message.text) {
+  //   return sendTextMessage(event.sender.id, 'Hello!');
+  // }
+  // return null;
   return witAi(event)
     .then(result => sendTextMessage(event.sender.id, result))
     .catch(error => console.error('wit send error', error.message));
@@ -101,7 +105,7 @@ function receiveMessage(event) {
  * Example generic message
  * @returns {null}
  */
-function receiveMessageGeneric() {
+function receiveMessageGeneric(event) {
   if (event.sender && event.sender.id && event.message && event.message.text) {
     // Handle message
     // return sendTextMessage(event.sender.id, 'Hi! Why do you say ' + event.message.text + '?')
