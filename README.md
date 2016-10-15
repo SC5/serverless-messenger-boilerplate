@@ -56,12 +56,12 @@ Following steps are slightly modified version of https://wit.ai/docs/quickstart
 10. Click again on Add a new entity, then select `wit/datetime` and highlight "tomorrow" in the sentence
 11. Click Bot executes, click on func... and type "getWeather"
 12. Click Updates context keys with... and type `temperature && description && datetime`
-13. Click Bot sends and type "The weather in {location} {datetime} will be {description} with {temperature}°C."
+13. Click Bot sends and type "The weather in {location} {datetime} will be {description} with temperature of {temperature}°C."
 14. Select "Save Story" on then top of the page
 15. Test the bot -> "What’s the weather in London tomorrow?"
 16. Click on the branch icon next to forecast in the story
 17. Type `temperature && description` in the context-key field
-18. Click Bot sends and type "The weather in {location} is {description} with {temperature}°C."
+18. Click Bot sends and type "The weather in {location} is {description} with temperature of {temperature}°C."
 20. Click again on the branch icon next to forecast in the story
 21. Type `missingLocation` in the context-key field
 22. Click Bot sends and type "Where?"
