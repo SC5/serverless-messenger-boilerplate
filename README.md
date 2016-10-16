@@ -3,7 +3,10 @@
 _INSTRUCTIONS DRAFT_
 
 **The Objective**
+
 [TBD] Create a Facebook Messenger chatbot that returns the weather.
+
+![Objective chart](https://raw.githubusercontent.com/SC5/serverless-messenger-boilerplate/master/docs/serverless-messenger-bot.png)
 
 [TBD] Flowchart of objective
 - user sends message from messenger messenger api which forwards it to the api gateway
