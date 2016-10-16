@@ -1,6 +1,6 @@
 # Serverless Messenger Bot Boilerplate
 
-_INSTRUCTIONS DRAFT_
+_WORK IN PROGRESS_
 
 **The Objective**
 
@@ -8,21 +8,19 @@ _INSTRUCTIONS DRAFT_
 
 ![Objective chart](https://raw.githubusercontent.com/SC5/serverless-messenger-boilerplate/master/docs/serverless-messenger-bot.png)
 
-[TBD] Flowchart of objective
-- user sends message from messenger messenger api which forwards it to the api gateway
-- lambda sends message to wit.ai that processes it and returns context back
-- lambda runs action that requests weather information from Open Weather Map and processes response
-- node-wit - send
-- lambda sends message to messenger api which forwards it to user
+1. User sends message from Facebook Messenger to Facebook Messenger API which forwards it to the AWS API Gateway
+2. AWS API Gateway triggers Lambda function that forwards message to wit.ai which processes it and returns context
+3. Lambda function runs action that requests weather information from Open Weather Map and processes response
+4. Lambda sends message to the Facebook Messenger API which forwards it to user
 
-**INSTALL BOILERPLATE**
+## Boilerplate Installation
 
 1. Run `serverless install --url https://github.com/SC5/serverless-messenger-boilerplate.git`
 2. Run `npm install`
 3. Rename example.env to .env and fill in `FACEBOOK_BOT_VERIFY_TOKEN`
 4. Run `serverless deploy` then copy the GET endpoint url
 
-**SETUP FACEBOOK APP**
+## Facebook App Configuration
 
 1. In Facebook Developer site create new Facebook application and page
   * Create Facebook application -> https://developers.facebook.com/quickstarts/?platform=web
@@ -43,7 +41,7 @@ More detailed instructions for Facebook Messenger platform configuration can be 
 - Run `serverless deploy`
 - Open Facebook page created in step 1 and send message "Hello" to it
 
-**SETUP WIT.AI [TBD]**
+## Wit.ai Configuration
 
 Following steps are slightly modified version of https://wit.ai/docs/quickstart
 
@@ -77,7 +75,7 @@ Following steps are slightly modified version of https://wit.ai/docs/quickstart
 29. Copy App ID
 30. Paste token to `.env` file as `WIT_AI_TOKEN`
 
-**SETUP OPEN WEATHER MAP**
+## Open Weather Map Configuration
 
 1. Register to Open Weather Map
 2. Click "Hello username" in the top menu bar
@@ -86,7 +84,7 @@ Following steps are slightly modified version of https://wit.ai/docs/quickstart
 5. Copy the created token
 6. Paste token to `.env` file as `WEATHER_API_TOKEN`
 
-**FINAL TOUCH**
+## Final Touch
 
 1. Run `serverless deploy`
 2. Open Messenger and search you bot
