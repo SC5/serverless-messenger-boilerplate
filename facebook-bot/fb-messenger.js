@@ -92,13 +92,19 @@ function receiveOptIn(event) {
  * @returns {Promise.<TResult>}
  */
 function receiveMessage(event) {
-  // if (event.sender && event.sender.id && event.message && event.message.text) {
-  //   return sendTextMessage(event.sender.id, 'Hello!');
-  // }
-  // return null;
-  return witAi(event)
-    .then(result => sendTextMessage(event.sender.id, result))
-    .catch(error => console.error('wit send error', error.message));
+  if (process.env.WIT_AI_TOKEN) {
+    return witAi(event)
+      .then(result => sendTextMessage(event.sender.id, result))
+      .catch(error => console.error('wit send error', error.message));
+  } else {
+    console.log(event);
+    if (event.sender && event.sender.id) {
+      return sendTextMessage(event.sender.id, {
+        text: 'Hello! I should converse with Wit.ai but I do not have a key!'
+      });
+    }
+    return null;
+  }
 }
 
 /**
