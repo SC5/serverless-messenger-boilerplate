@@ -17,13 +17,11 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
       })
     };
     // Copy custom actions to actions
-    Object.keys(myActions).map((value) => {
-      actions[value] = myActions[value];
-    });
 
+    const combinedActions = Object.assign({}, actions, myActions);
     const client = new Wit({
       accessToken: process.env.WIT_AI_TOKEN,
-      actions: actions
+      actions: combinedActions
     });
 
     client.runActions(sessionId, event.message.text, context0);

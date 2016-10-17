@@ -96,15 +96,12 @@ function receiveMessage(event) {
     return witAi(event)
       .then(result => sendTextMessage(event.sender.id, result))
       .catch(error => console.error('wit send error', error.message));
-  } else {
-    console.log(event);
-    if (event.sender && event.sender.id) {
-      return sendTextMessage(event.sender.id, {
-        text: 'Hello! I should converse with Wit.ai but I do not have a key!'
-      });
-    }
-    return null;
+  } else if (event.sender && event.sender.id && event.message && event.message.text) {
+    return sendTextMessage(event.sender.id, {
+      text: 'Hello! I should converse with Wit.ai but I do not have a key!'
+    });
   }
+  return null;
 }
 
 /**
