@@ -81,7 +81,9 @@ function receivePostback(event) {
 function receiveOptIn(event) {
   if (event.sender && event.sender.id) {
     console.log('Received opt-in from user', event.sender.id, 'with ref', event.optin.ref);
-    return sendTextMessage(event.sender.id, 'Hello! I\'m a bot. Ask me anything you like.');
+    return sendTextMessage(event.sender.id, {
+      text: 'Hello! I\'m a bot. Ask me anything you like.'
+    });
   }
   return null;
 }
@@ -92,10 +94,16 @@ function receiveOptIn(event) {
  * @returns {Promise.<TResult>}
  */
 function receiveMessage(event) {
+ // console.log(event.messaging);
   if (process.env.WIT_AI_TOKEN) {
     return witAi(event)
       .then(result => sendTextMessage(event.sender.id, result))
-      .catch(error => console.error('wit send error', error.message));
+      .catch(error => {
+        console.log('witAi error: ' + error.message );
+        sendTextMessage(event.sender.id, {
+          text: 'Error: ' + error.message
+        });
+      });
   } else if (event.sender && event.sender.id && event.message && event.message.text) {
     return sendTextMessage(event.sender.id, {
       text: 'Hello! I should converse with Wit.ai but I do not have a key!'
