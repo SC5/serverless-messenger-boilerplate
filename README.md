@@ -45,7 +45,7 @@ More detailed instructions for Facebook Messenger platform configuration can be 
 
 Following steps are slightly modified version of https://wit.ai/docs/quickstart
 
-1. Register to wit.ai
+1. Register to wit.ai https://wit.ai
 2. Click + icon located in top menu to create a new app
 3. Type in app name and description
 4. If you wish you can change language and data privacy
@@ -77,7 +77,7 @@ Following steps are slightly modified version of https://wit.ai/docs/quickstart
 
 ## Open Weather Map Configuration
 
-1. Register to Open Weather Map
+1. Register to Open Weather Map https://home.openweathermap.org/users/sign_up
 2. Click "Hello username" in the top menu bar
 3. Click "Api Keys" -tab
 4. Type in key name in "Create key" / "Name" input field and press "Create"

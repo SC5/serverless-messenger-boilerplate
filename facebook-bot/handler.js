@@ -9,7 +9,6 @@ const messenger = require('./fb-messenger.js');
  */
 function setEnvVars(event) {
   process.env.SERVERLESS_STAGE = event.stage;
-  process.env.SERVERLESS_PROJECT = 'sc5-serverless-messenger-bot';
 }
 
 module.exports.handler = (event, context, cb) => {
