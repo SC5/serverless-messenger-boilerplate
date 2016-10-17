@@ -29,7 +29,7 @@ _WORK IN PROGRESS_
   * Callback URL -> url from step 4
   * Verify Token -> from step 3
   * Select Subscription fields `message_deliveries`, `messages`, `messaging_optins`, and `messaging_postbacks`
-  * [TBD] flowchart of verification process
+  * [TBD] flowchart of verification process?
 3. Click `Verify and Save`
 4. In the Token Generation section, select the page created in step 5 and copy the generated token
 5. In Webhooks section, select page created in step 5 to be the one that subscribes the webhooks
