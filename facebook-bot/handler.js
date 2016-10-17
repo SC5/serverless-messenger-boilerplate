@@ -1,8 +1,7 @@
 'use strict';
 
 require('dotenv').config();
-const verify = require('./verify.js');
-const bot = require('./bot.js');
+const messenger = require('./fb-messenger.js');
 
 /**
  * Adds extra environmental variables
@@ -16,8 +15,8 @@ function setEnvVars(event) {
 module.exports.handler = (event, context, cb) => {
   setEnvVars(event);
   if (event.method === 'GET') {
-    verify.handler(event, cb);
+    messenger.verify(event, cb);
   } else {
-    bot.handler(event, cb);
+    messenger.handler(event, cb);
   }
 };

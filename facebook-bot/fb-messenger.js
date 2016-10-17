@@ -149,6 +149,19 @@ function receiveMessages(entriesData) {
     });
 }
 
+function verify(verifyToken, challenge) {
+  if (verifyToken === process.env.FACEBOOK_BOT_VERIFY_TOKEN) {
+    return Promise.resolve({ response: challenge });
+  }
+
+  return Promise.reject(new Error('400 Bad Token'));
+}
+
+module.exports.verify = (event, cb) =>
+  verify(event.query['hub.verify_token'], event.query['hub.challenge'])
+    .then(response => cb(null, response))
+    .then(null, err => cb(err));
+
 module.exports.handler = (event, cb) =>
   receiveMessages(event.body.entry || [])
     .then(response => cb(null, response))
