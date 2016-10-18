@@ -5,7 +5,6 @@ const actions = {
   getWeather: (data) => new Promise((resolve, reject) => {
     const context = data.context;
     const entities = data.entities;
-    console.log(data);
     const missingLocation = entities.location === undefined;
     const location = entities.location ? entities.location[0].value : null;
     const datetime = entities.datetime ? entities.datetime[0].value : null;
