@@ -35,15 +35,14 @@ function readSession(id) {
         return reject(err.toString());
       }
 
-      const session = Object.assign({ id: params.Key.id }, data.Item);
-      // should the context be resetted time to time?
+      const session = Object.assign({ id: params.Key.id, context: {} }, data.Item);
+      // @todo should the context be cleared time to time?
+      // How long is Wit.ai session?
       const now = Date.now();
-      if (!session.update || now - session.updated > 30000) {
+      if (!session.updated || now - session.updated > 30000) {
         Object.assign(session, { updated: Date.now() });
         Object.assign(session, { context: {} });
       }
-
-      console.log('read', session);
 
       return resolve(session);
     });
@@ -59,9 +58,6 @@ function writeSession(session) {
     if (!session.id) {
       return reject('NO_SESSION_ID');
     }
-
-    console.log('write', session);
-
     const sessionDoc = {
       TableName: sessionTable(),
       Item: session

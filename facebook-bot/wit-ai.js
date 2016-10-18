@@ -12,13 +12,12 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
   if (event.sender && event.sender.id && event.message && event.message.text) {
     const sessionId = `${event.id}-${event.updated}`;
     const actions = {
-      send: (request, response) => new Promise(() => {
-        session.writeSession(Object.assign({ id: event.id, updated: event.updated }, { context: request.context }))
-          .then(() => resolveMessage(response));
+      send: (request, response) => new Promise((resolve) => {
+        resolveMessage(response);
+        return resolve();
       })
     };
     // Copy custom actions to actions
-
     const combinedActions = Object.assign({}, actions, myActions);
     const client = new Wit({
       accessToken: process.env.WIT_AI_TOKEN,
@@ -26,6 +25,7 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
     });
 
     client.runActions(sessionId, event.message.text, Object.assign({}, event.context))
+      .then(ctx => session.writeSession(Object.assign({ id: event.id, updated: event.updated }, { context: ctx })))
       .catch(err => console.error(err));
   } else {
     rejectMessage('wit ai failed');
