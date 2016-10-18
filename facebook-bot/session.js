@@ -35,15 +35,17 @@ function readSession(id) {
         return reject(err.toString());
       }
 
-      if (data.Item) {
-        return resolve(data.Item);
+      const session = Object.assign({ id: params.Key.id }, data.Item);
+      // should the context be resetted time to time?
+      const now = Date.now();
+      if (!session.update || now - session.updated > 30000) {
+        Object.assign(session, { updated: Date.now() });
+        Object.assign(session, { context: {} });
       }
 
-      return resolve({
-        id,
-        updated: Date.now(),
-        context: {}
-      });
+      console.log('read', session);
+
+      return resolve(session);
     });
   });
 }
@@ -55,16 +57,10 @@ function readSession(id) {
 function writeSession(session) {
   return new Promise((resolve, reject) => {
     if (!session.id) {
-      reject('NO_SESSION_ID');
+      return reject('NO_SESSION_ID');
     }
 
-    const now = Date.now();
-
-    // should the context be resetted time to time?
-    if (now - session.updated > 30000) {
-      Object.assign(session, { updated: Date.now() });
-      Object.assign(session, { context: {} });
-    }
+    console.log('write', session);
 
     const sessionDoc = {
       TableName: sessionTable(),

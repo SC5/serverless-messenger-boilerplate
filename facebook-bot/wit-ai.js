@@ -13,7 +13,8 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
     const sessionId = `${event.id}-${event.updated}`;
     const actions = {
       send: (request, response) => new Promise(() => {
-        resolveMessage(response);
+        session.writeSession(Object.assign({ id: event.id, updated: event.updated }, { context: request.context }))
+          .then(() => resolveMessage(response));
       })
     };
     // Copy custom actions to actions
@@ -25,11 +26,6 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
     });
 
     client.runActions(sessionId, event.message.text, Object.assign({}, event.context))
-      .then(ctx => session.writeSession({ id: event.id, updated: event.updated, context: ctx }))
-      .then((s) => {
-        console.log({ s });
-        return s;
-      })
       .catch(err => console.error(err));
   } else {
     rejectMessage('wit ai failed');

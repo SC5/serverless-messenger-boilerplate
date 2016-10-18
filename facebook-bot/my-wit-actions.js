@@ -9,6 +9,7 @@ const actions = {
     const missingLocation = entities.location === undefined;
     const location = entities.location ? entities.location[0].value : null;
     const datetime = entities.datetime ? entities.datetime[0].value : null;
+    delete context.missingLocation;
 
     if (missingLocation) {
       const contextData = Object.assign({}, context, { missingLocation });
