@@ -2,6 +2,7 @@
 
 const Wit = require('node-wit').Wit;
 const myActions = require('./my-wit-actions');
+const session = require('./session.js');
 
 /**
  * Handles wit.ai integration
@@ -10,7 +11,6 @@ const myActions = require('./my-wit-actions');
 const init = event => new Promise((resolveMessage, rejectMessage) => {
   if (event.sender && event.sender.id && event.message && event.message.text) {
     const sessionId = `${event.id}-${event.updated}`;
-    const context0 = {};
     const actions = {
       send: (request, response) => new Promise(() => {
         resolveMessage(response);
@@ -24,7 +24,13 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
       actions: combinedActions
     });
 
-    client.runActions(sessionId, event.message.text, context0);
+    client.runActions(sessionId, event.message.text, Object.assign({}, event.context))
+      .then(ctx => session.writeSession({ id: event.id, updated: event.updated, context: ctx }))
+      .then((s) => {
+        console.log({ s });
+        return s;
+      })
+      .catch(err => console.error(err));
   } else {
     rejectMessage('wit ai failed');
   }

@@ -41,6 +41,7 @@ function readSession(id) {
 
       return resolve({
         id,
+        updated: Date.now(),
         context: {}
       });
     });
@@ -57,7 +58,13 @@ function writeSession(session) {
       reject('NO_SESSION_ID');
     }
 
-    Object.assign(session, { updated: Date.now() });
+    const now = Date.now();
+
+    // should the context be resetted time to time?
+    if (now - session.updated > 30000) {
+      Object.assign(session, { updated: Date.now() });
+      Object.assign(session, { context: {} });
+    }
 
     const sessionDoc = {
       TableName: sessionTable(),

@@ -128,8 +128,9 @@ function receiveMessages(entriesData) {
   entries.forEach((entry) => {
     const messaging = entry.messaging || [];
     messaging.forEach((event) => {
+      console.log(JSON.stringify(event));
       const userId = event.sender.id;
-      session.writeSession({ id: userId.toString() })
+      session.readSession(userId.toString())
         .then((sessionData) => {
           const eventData = Object.assign({}, event, sessionData);
           promise = promise.then(() => {

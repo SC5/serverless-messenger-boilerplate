@@ -2,7 +2,7 @@ const moment = require('moment');
 const weather = require('./weather');
 
 const actions = {
-  getWeather: (data) => new Promise((resolve, reject) => {
+  getWeather: data => new Promise((resolve, reject) => {
     const context = data.context;
     const entities = data.entities;
 
