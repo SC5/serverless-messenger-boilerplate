@@ -97,12 +97,16 @@ function receiveMessage(event) {
  // console.log(event.messaging);
   if (process.env.WIT_AI_TOKEN) {
     return witAi(event)
-      .then(result => sendTextMessage(event.sender.id, result))
+      .then(result => {
+        return sendTextMessage(event.sender.id, result)
+      })
       .catch(error => {
-        console.log('witAi error: ' + error.message );
-        sendTextMessage(event.sender.id, {
-          text: 'Error: ' + error.message
-        });
+        if (error.message) {
+          console.log('witAi error: ' + error.message );
+          return sendTextMessage(event.sender.id, {
+            text: 'Error: ' + error.message
+          });
+        } 
       });
   } else if (event.sender && event.sender.id && event.message && event.message.text) {
     return sendTextMessage(event.sender.id, {
@@ -110,6 +114,15 @@ function receiveMessage(event) {
     });
   }
   return null;
+}
+
+function receiveOtherEvent(event) {
+  return new Promise((resolveMessage, rejectMessage) => {
+    resolveMessage({
+      type: 'unhandled',
+      event
+    });
+  });
 }
 
 /**
@@ -145,8 +158,10 @@ function receiveMessages(entriesData) {
               return receivePostback(eventData);
             } else if (eventData.optin) {
               return receiveOptIn(eventData);
-            }
-            return receiveMessage(eventData);
+            } else if (eventData.message) {
+              return receiveMessage(eventData);
+            } 
+            return receiveOtherEvent(eventData);
           });
         });
     });
@@ -176,5 +191,8 @@ module.exports.verify = (event, cb) =>
 module.exports.handler = (event, cb) =>
   receiveMessages(event.body.entry || [])
     .then(response => cb(null, response))
-    .then(null, err => cb(err));
+    .then(null, err => {
+      console.log('Error: ' + err);
+      cb(null, 'Error: ' + err);
+    });
 
