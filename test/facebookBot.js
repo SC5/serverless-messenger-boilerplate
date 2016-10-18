@@ -55,6 +55,30 @@ describe('Facebook bot service', () => {
 
   describe('Messaging', () => {
 
+    it('Tests current time', (done) => {
+      wrapped.run({
+        method: 'POST',
+        stage: 'dev',
+        body: {
+          entry: [
+            {
+              messaging: [{
+                sender: {
+                  id: process.env.FACEBOOK_ID_FOR_TESTS
+                },
+                message: {
+                  text: 'What time is it?'
+                }
+              }]
+            }
+          ]
+        }
+      }, (err, response) => {
+        // console.log(err, response);
+        done(err);
+      });
+    });
+
     it('Tests current weather', (done) => {
       wrapped.run({
         method: 'POST',
@@ -67,7 +91,7 @@ describe('Facebook bot service', () => {
                   id: process.env.FACEBOOK_ID_FOR_TESTS
                 },
                 message: {
-                  text: 'How will be the weather?'
+                  text: 'What is the weather?'
                 }
               }]
             }

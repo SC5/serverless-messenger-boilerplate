@@ -2,7 +2,7 @@ const moment = require('moment');
 const weather = require('./weather');
 
 const actions = {
-  getWeather: (data) => new Promise((resolve, reject) => {
+  getWeather: data => new Promise((resolve, reject) => {
     const context = data.context;
     const entities = data.entities;
     const missingLocation = entities.location === undefined;
@@ -34,15 +34,12 @@ const actions = {
         .catch(reject);
     }
   }),
-  getTime: (data) => new Promise((resolve, reject) => {
+  getTime: data => new Promise((resolve) => {
     // Sample action for node-wit
-    const context = data.context;
     const contextData = {};
-    const datetime = new Date();
-
-    Object.assign(contextData, { datetime: moment(datetime).calendar().toLowerCase() });
+    Object.assign(contextData, { datetime: moment().calendar().toLowerCase() });
     resolve(contextData);
   })
-}
+};
 
 module.exports = actions;

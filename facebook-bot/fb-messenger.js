@@ -94,19 +94,17 @@ function receiveOptIn(event) {
  * @returns {Promise.<TResult>}
  */
 function receiveMessage(event) {
- // console.log(event.messaging);
   if (process.env.WIT_AI_TOKEN) {
     return witAi(event)
-      .then(result => {
-        return sendTextMessage(event.sender.id, result)
-      })
-      .catch(error => {
+      .then(result => sendTextMessage(event.sender.id, result))
+      .catch((error) => {
         if (error.message) {
-          console.log('witAi error: ' + error.message );
+          console.log('witAi error:', error.message);
           return sendTextMessage(event.sender.id, {
-            text: 'Error: ' + error.message
+            text: `Error: ${error.message}`
           });
-        } 
+        }
+        return null;
       });
   } else if (event.sender && event.sender.id && event.message && event.message.text) {
     return sendTextMessage(event.sender.id, {
@@ -150,7 +148,7 @@ function receiveMessages(entriesData) {
     const messaging = entry.messaging || [];
     messaging.forEach((event) => {
       const userId = event.sender.id;
-      session.writeSession({ id: userId.toString() })
+      session.readSession(userId.toString())
         .then((sessionData) => {
           const eventData = Object.assign({}, event, sessionData);
           promise = promise.then(() => {
@@ -160,7 +158,7 @@ function receiveMessages(entriesData) {
               return receiveOptIn(eventData);
             } else if (eventData.message) {
               return receiveMessage(eventData);
-            } 
+            }
             return receiveOtherEvent(eventData);
           });
         });
@@ -191,8 +189,7 @@ module.exports.verify = (event, cb) =>
 module.exports.handler = (event, cb) =>
   receiveMessages(event.body.entry || [])
     .then(response => cb(null, response))
-    .then(null, err => {
-      console.log('Error: ' + err);
-      cb(null, 'Error: ' + err);
+    .then(null, (err) => {
+      console.log('Error:', err);
+      cb(null, 'Error:', err);
     });
-
