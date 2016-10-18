@@ -2,7 +2,7 @@
 
 const request = require('request-promise');
 const session = require('./session.js');
-const witAi = require('./wit-ai');
+const witAi = require('../wit-ai/wit-ai.js');
 
 function sendGenericMessage(recipientId) {
   const messageData = {
