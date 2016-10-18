@@ -34,6 +34,14 @@ const actions = {
         })
         .catch(reject);
     }
+  }),
+  getTime: (data) => new Promise((resolve, reject) => {
+    const context = data.context;
+    const contextData = {};
+    const datetime = new Date();
+
+    Object.assign(contextData, { datetime: moment(datetime).calendar().toLowerCase() });
+    resolve(contextData);
   })
 }
 
