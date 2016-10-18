@@ -14,6 +14,12 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
     const actions = {
       send: (request, response) => new Promise(() => {
         resolveMessage(response);
+      }),
+      debugContext: (data) => new Promise((resolve, reject) => {
+        const context = data.context;
+        console.log('WIT.AI DEBUG:')
+        console.log(JSON.stringify(data, null, 2));
+        resolve(context);
       })
     };
     // Copy custom actions to actions
