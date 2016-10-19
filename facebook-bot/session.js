@@ -25,7 +25,7 @@ function sessionTable() {
 function readSession(id) {
   return new Promise((resolve, reject) => {
     const params = {
-      Key: { id: id.toString() },
+      Key: { id },
       TableName: sessionTable(),
       ConsistentRead: true
     };
@@ -35,14 +35,19 @@ function readSession(id) {
         return reject(err.toString());
       }
 
-      if (data.Item) {
-        return resolve(data.Item);
+      const session = Object.assign({ id, context: {} }, data.Item);
+      // @todo should the context be cleared time to time?
+      // How long is Wit.ai session?
+      const now = Date.now();
+      if (!session.updated || now - session.updated > 30000) {
+        Object.assign(session, { updated: now });
+        Object.assign(session, { context: {} });
       }
 
-      return resolve({
-        id,
-        context: {}
-      });
+      // context  disabled in workshop
+      Object.assign(session, { context: {} });
+
+      return resolve(session);
     });
   });
 }
@@ -54,10 +59,8 @@ function readSession(id) {
 function writeSession(session) {
   return new Promise((resolve, reject) => {
     if (!session.id) {
-      reject('NO_SESSION_ID');
+      return reject('NO_SESSION_ID');
     }
-
-    Object.assign(session, { updated: Date.now() });
 
     const sessionDoc = {
       TableName: sessionTable(),

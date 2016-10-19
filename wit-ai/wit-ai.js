@@ -2,6 +2,7 @@
 
 const Wit = require('node-wit').Wit;
 const myActions = require('./my-wit-actions');
+const session = require('../facebook-bot/session.js');
 
 /**
  * Handles wit.ai integration
@@ -10,29 +11,29 @@ const myActions = require('./my-wit-actions');
 const init = event => new Promise((resolveMessage, rejectMessage) => {
   if (event.sender && event.sender.id && event.message && event.message.text) {
     const sessionId = `${event.id}-${event.updated}`;
-    const context0 = {};
     const actions = {
-      send: (request, response) => new Promise(() => {
+      send: (request, response) => new Promise((resolve) => {
         resolveMessage(response);
+        resolve();
       }),
-      debugContext: (data) => new Promise((resolve, reject) => {
+      debugContext: data => new Promise((resolve) => {
         const context = data.context;
-        console.log('WIT.AI DEBUG:')
+        console.log('WIT.AI DEBUG:');
         console.log(JSON.stringify(data, null, 2));
         resolve(context);
       })
     };
-    // Copy custom actions to actions
-    Object.keys(myActions).map((value) => {
-      actions[value] = myActions[value];
-    });
+
+    // Combine custom actions and actions
+    const combinedActions = Object.assign({}, actions, myActions);
     const client = new Wit({
       accessToken: process.env.WIT_AI_TOKEN,
-      actions: actions
+      actions: combinedActions
     });
-    client.runActions(sessionId, event.message.text, context0)
-    .then(result => resolveMessage(result))
-    .catch(error => rejectMessage(error));
+
+    client.runActions(sessionId, event.message.text, Object.assign({}, event.context))
+      .then(ctx => session.writeSession({ id: event.id, updated: event.updated, context: ctx }))
+      .catch(error => rejectMessage(error));
   } else {
     rejectMessage('wit ai failed');
   }
