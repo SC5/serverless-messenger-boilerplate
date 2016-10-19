@@ -47,6 +47,11 @@ functions:
           path: facebook-bot 
           method: post
           integration: lambda
+      - sns: ${self:service}-fbMessengerTopic-${opt:stage, self:provider.stage}
+  witAiHandler:
+    handler: wit-ai/handler.handler
+    events:
+      - sns: ${self:service}-witAiTopic-${opt:stage, self:provider.stage}
   
 #    you can add any of the following events
 #    events:
@@ -75,9 +80,16 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:service}-sessions-${opt:stage, self:provider.stage}
+#    WitAiTopic:
+#      Type: AWS::SNS::Topic
+#      Properties:
+#        TopicName: ${self:service}-witAi-${opt:stage, self:provider.stage}
+#    FBMessengerTopic:
+#      Type: AWS::SNS::Topic
+#      Properties:
+#        TopicName: ${self:service}-fbMessenger-${opt:stage, self:provider.stage}
 
 plugins:
-  - serverless-offline
   - serverless-mocha-plugin
 
 # TODO: webpack
