@@ -139,6 +139,14 @@ function receiveMessageGeneric(event) {
 }
 
 /**
+ * Interface for sending Messages
+ * @returns {Promise.<TResult>}
+ */
+function sendMessage(recipientId, message) {
+  // Currently supports only text messages
+  return sendTextMessage(recipientId, message);
+}
+/**
  * Message handler
  * @param entriesData
  * @returns {Promise.<TResult>}
@@ -196,3 +204,4 @@ module.exports.handler = (event, cb) =>
       cb(null, 'Error: ' + err);
     });
 
+module.exports.sendMessage = sendMessage;

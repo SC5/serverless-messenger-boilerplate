@@ -53,6 +53,36 @@ describe('Facebook bot service', () => {
     });
   });
 
+  describe('Send message using SNS', () => {
+    it('Send text to Wit.ai and receive a response', (done) => {
+      const snsEvent = {
+        id: Math.round(Math.random()*10000),
+        updated: Date.now(),
+        recipient: { 
+          id: process.env.FACEBOOK_ID_FOR_TESTS,
+          name: 'John Smith' 
+        },
+        message: { text: "Testing Messenger via SNS"}
+      }
+      wrapped.run({ Records:
+        [ { EventSource: 'aws:sns',
+            EventVersion: '1.0',
+            EventSubscriptionArn: 'arn:aws:sns:us-east-1:869231578214:sc5-serverless-messenger-bot-witAiTopic-dev:9752702a-cfd3-4711-b0c1-eda9f5f87635',
+            Sns: {
+              Subject: 'SUBJECT',
+              Message: JSON.stringify(snsEvent,null)
+            }
+        } ] 
+      }, (err, response) => {
+        if (err) {
+          return done(err);
+        }
+        expect(response.text).to.match(/[a-z]+/i);
+        done();
+      });
+    });    
+  });
+
   describe('Messaging', () => {
 
     it('Tests current weather', (done) => {
