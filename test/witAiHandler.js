@@ -22,7 +22,7 @@ describe('witAiHandler', () => {
     done();
   });
 
-  it('Check weather', (done) => {
+  it('Send text to Wit.ai and receive a response', (done) => {
     const snsEvent = {
       id: Math.round(Math.random()*10000),
       updated: Date.now(),
