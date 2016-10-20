@@ -14,6 +14,22 @@ const liveFunction = {
 };
 
 const wrapped = lambdaWrapper.wrap(mod, { handler: 'handler' });
+// Do not actually send messages
+process.env.SILENT=1;
+
+function buildMessage(snsEvent) {
+  return { Records:
+      [ { EventSource: 'aws:sns',
+          EventVersion: '1.0',
+          EventSubscriptionArn: 'arn:aws:sns:us-east-1:869231578214:sc5-serverless-messenger-bot-witAiTopic-dev:9752702a-cfd3-4711-b0c1-eda9f5f87635',
+          Sns: {
+            Subject: 'SUBJECT',
+            Message: JSON.stringify(snsEvent,null)
+          }
+      }
+    ]
+  };
+}
 
 describe('witAiHandler', () => {
   before(function (done) {
@@ -22,7 +38,7 @@ describe('witAiHandler', () => {
     done();
   });
 
-  it('Send text to Wit.ai and receive a response', (done) => {
+  it('Send text to Wit.ai (via SNS) and receive a response', (done) => {
     const snsEvent = {
       id: Math.round(Math.random()*10000),
       updated: Date.now(),
@@ -32,20 +48,71 @@ describe('witAiHandler', () => {
       },
       message: { text: "What is the weather in Rome?"}
     }
-    wrapped.run({ Records:
-      [ { EventSource: 'aws:sns',
-          EventVersion: '1.0',
-          EventSubscriptionArn: 'arn:aws:sns:us-east-1:869231578214:sc5-serverless-messenger-bot-witAiTopic-dev:9752702a-cfd3-4711-b0c1-eda9f5f87635',
-          Sns: {
-            Subject: 'SUBJECT',
-            Message: JSON.stringify(snsEvent,null)
-          }
-      } ] 
-    }, (err, response) => {
+    wrapped.run(buildMessage(snsEvent), (err, response) => {
       if (err) {
         return done(err);
       }
       expect(response.text).to.match(/[a-z]+/i);
+      done();
+    });
+  });
+});
+
+// Implement your own bot cases here
+describe('Weather bot', () => {
+  it('Tests current weather', (done) => {
+    wrapped.run(buildMessage({
+      id: Math.round(Math.random()*10000),
+      updated: Date.now(),
+      sender: { 
+        id: process.env.FACEBOOK_ID_FOR_TESTS,
+        name: 'John Smith' 
+      },
+      message: { text: "What is the weather?"}
+    }), (err, response) => {
+      if (err) {
+        return done(err);
+      }
+      expect(response.text).to.match(/Where are you/);
+      done();
+    });
+  });
+
+  it('Tests current weather in London', (done) => {
+    wrapped.run(buildMessage({
+      id: Math.round(Math.random()*10000),
+      updated: Date.now(),
+      sender: { 
+        id: process.env.FACEBOOK_ID_FOR_TESTS,
+        name: 'John Smith' 
+      },
+      message: { text: "How will the weather be in London?"}
+    }), (err, response) => {
+      if (err) {
+        return done(err);
+      }
+      expect(response.text).to.match(/London/);
+      expect(response.text).to.match(/temperature/);
+      done();
+    });
+  });
+
+  it('Tests tomorrows forecast in London', (done) => {
+    wrapped.run(buildMessage({
+      id: Math.round(Math.random()*10000),
+      updated: Date.now(),
+      sender: { 
+        id: process.env.FACEBOOK_ID_FOR_TESTS,
+        name: 'John Smith' 
+      },
+      message: { text: "How will the weather be in London tomorrow?"}
+    }), (err, response) => {
+      if (err) {
+        return done(err);
+      }
+      expect(response.text).to.match(/London/);
+      expect(response.text).to.match(/temperature/);
+      expect(response.text).to.match(/tomorrow/);
       done();
     });
   });
