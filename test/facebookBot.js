@@ -16,6 +16,9 @@ const liveFunction = {
 
 const wrapped = lambdaWrapper.wrap(mod, {handler: 'handler'});
 
+// Do not actually send messages
+//process.env.SILENT=1;
+
 describe('Facebook bot service', () => {
   before((done) => {
 //  lambdaWrapper.init(liveFunction); // Run the deployed lambda
@@ -30,7 +33,8 @@ describe('Facebook bot service', () => {
         query: {
           'hub.verify_token': process.env.FACEBOOK_BOT_VERIFY_TOKEN,
           'hub.challenge': challenge
-        }
+        },
+        stage: 'dev'
       }, (err, response) => {
         expect(challenge).to.be.equal(response.response || '');
         done();
@@ -44,7 +48,8 @@ describe('Facebook bot service', () => {
         query: {
           'hub.verify_token': 'invalid_token',
           'hub.challenge': challenge
-        }
+        },
+        stage: 'dev'
       }, (err, response) => {
         expect(err.toString().toLowerCase()).to.match(/400.*bad token/);
 //        expect(challenge).to.be.equal(response.response || '');
@@ -53,8 +58,38 @@ describe('Facebook bot service', () => {
     });
   });
 
-  describe('Send message using SNS', () => {
-    it('Send text to Wit.ai and receive a response', (done) => {
+  describe('Receive / Send messages', () => {
+    it('Forwards requests to wit.ai', (done) => {
+      wrapped.run({
+        method: 'POST',
+        stage: 'dev',
+        body: {
+          entry: [
+            {
+              messaging: [{
+                sender: {
+                  id: process.env.FACEBOOK_ID_FOR_TESTS
+                },
+                message: {
+                  text: 'What time is it?'
+                }
+              }]
+            }
+          ]
+        }
+      }, (err, response) => {
+        if (err) {
+          return done(err);
+        }
+        console.log(response);
+        let message = response[0] || {};
+        expect(message.TopicArn).to.match(/witAiTopic/);
+        expect(message.Message).to.match(/What time is it/);
+        done();
+      });
+    });
+
+    it('Send message to Messenger from SNS', (done) => {
       const snsEvent = {
         id: Math.round(Math.random()*10000),
         updated: Date.now(),
@@ -62,8 +97,10 @@ describe('Facebook bot service', () => {
           id: process.env.FACEBOOK_ID_FOR_TESTS,
           name: 'John Smith' 
         },
-        message: { text: "Testing Messenger via SNS"}
-      }
+        message: { text: "Testing Messenger via SNS"},
+        stage: 'dev'
+      };
+
       wrapped.run({ Records:
         [ { EventSource: 'aws:sns',
             EventVersion: '1.0',
@@ -77,12 +114,15 @@ describe('Facebook bot service', () => {
         if (err) {
           return done(err);
         }
-        expect(response.text).to.match(/[a-z]+/i);
+        expect(snsEvent.recipient.id).to.equal(response.recipient_id);
         done();
       });
     });    
   });
+});
 
+if (0) {
+describe('Weather bot', () => {
   describe('Messaging', () => {
 
     it('Tests current time', (done) => {
@@ -182,3 +222,5 @@ describe('Facebook bot service', () => {
     });
   });
 });
+}
+

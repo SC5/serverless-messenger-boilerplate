@@ -3,6 +3,7 @@
 const request = require('request-promise');
 const session = require('./session.js');
 const witAi = require('../wit-ai/wit-ai.js');
+const messageQueue = require('../lib/messageQueue.js');
 
 function sendGenericMessage(recipientId) {
   const messageData = {
@@ -95,17 +96,9 @@ function receiveOptIn(event) {
  */
 function receiveMessage(event) {
   if (process.env.WIT_AI_TOKEN) {
-    return witAi(event)
-      .then(result => sendTextMessage(event.sender.id, result))
-      .catch((error) => {
-        if (error.message) {
-          console.log('witAi error:', error.message);
-          return sendTextMessage(event.sender.id, {
-            text: `Error: ${error.message}`
-          });
-        }
-        return null;
-      });
+    const topicName = [process.env.SERVERLESS_PROJECT, 'witAiTopic', process.env.SERVERLESS_STAGE].join('-');
+
+    return messageQueue.sendMessage(topicName, event);
   } else if (event.sender && event.sender.id && event.message && event.message.text) {
     return sendTextMessage(event.sender.id, {
       text: 'Hello! I should converse with Wit.ai but I do not have a key!'
@@ -144,41 +137,58 @@ function sendMessage(recipientId, message) {
   // Currently supports only text messages
   return sendTextMessage(recipientId, message);
 }
+
+/**
+ * Receive a single event
+ * @param eventData
+ * @returns {Promise.<TResult>}
+ */
+function receiveEvent(event) {
+  return new Promise((success, failure) => {
+    const userId = event.sender.id;
+    session.readSession(userId.toString())
+    .then((sessionData) => {
+        const eventData = Object.assign({}, event, sessionData);
+        if (eventData.postback) {
+          receivePostback(eventData).then(success, failure);
+        } else if (eventData.optin) {
+          receiveOptIn(eventData).then(success, failure);
+        } else if (eventData.message) {
+          receiveMessage(eventData).then(success, failure);
+        } else {
+          receiveOtherEvent(eventData).then(success, failure);
+        } 
+    })
+    .catch(error => {
+      console.log('ERROR:' + error);
+      failure(error);
+    })
+  });
+}
+
 /**
  * Message handler
  * @param entriesData
  * @returns {Promise.<TResult>}
  */
-function receiveMessages(entriesData) {
-  let promise = Promise.resolve();
-  const entries = entriesData || [];
-  entries.forEach((entry) => {
-    const messaging = entry.messaging || [];
-    messaging.forEach((event) => {
-      const userId = event.sender.id;
-      session.readSession(userId.toString())
-        .then((sessionData) => {
-          const eventData = Object.assign({}, event, sessionData);
-          promise = promise.then(() => {
-            if (eventData.postback) {
-              return receivePostback(eventData);
-            } else if (eventData.optin) {
-              return receiveOptIn(eventData);
-            } else if (eventData.message) {
-              return receiveMessage(eventData);
-            }
-            return receiveOtherEvent(eventData);
-          });
-        });
+function receiveEvents(entriesData) {
+  return new Promise((success,failure) => {
+    const entries = entriesData || [];
+    let events = [];
+    entries.forEach((entry) => {
+      const messaging = entry.messaging || [];
+      messaging.forEach((event) => {
+        events.push(receiveEvent(event));
+      });
+    });
+    Promise.all(events)
+    .then(responses => {
+      return success(responses);
+    })
+    .catch(error => {
+      failure(error);
     });
   });
-
-  return promise
-    .then(() => ({}))
-    .then(null, (err) => {
-      console.log('Error handling messages:', err);
-      return {};
-    });
 }
 
 function verify(verifyToken, challenge) {
@@ -194,9 +204,11 @@ module.exports.verify = (event, cb) =>
     .then(response => cb(null, response))
     .then(null, err => cb(err));
 
-module.exports.handler = (event, cb) =>
-  receiveMessages(event.body.entry || [])
-    .then(response => cb(null, response))
+module.exports.receive = (event, cb) =>
+  receiveEvents(event.body.entry || [])
+    .then(response => {
+      cb(null, response)
+    })
     .then(null, (err) => {
       console.log('Error:', err);
       cb(null, 'Error:', err);
