@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 const witAi = require('./wit-ai.js');
-const messageQueue = require('../lib/messagequeue.js');
+const messageQueue = require('../lib/messageQueue.js');
 
 /**
  * Adds extra environmental variables
