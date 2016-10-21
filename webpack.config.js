@@ -9,8 +9,7 @@ module.exports = {
   target: 'node',
   module: {
     loaders: [
-      { test: /\.json/, loader: 'json-loader' },
-      { test: /\.env/, loader: 'file-loader' }
+      { test: /\.json/, loader: 'json-loader' }
     ]
   },
   plugins: [
