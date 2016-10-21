@@ -29,7 +29,9 @@ provider:
 
 package:
   exclude:
-    - test
+    - test/**
+    - .git/**
+    - docs/**
 
 functions:
   facebookBot: 
