@@ -93,5 +93,6 @@ resources:
 
 plugins:
   - serverless-mocha-plugin
+  - serverless-webpack
 
 # TODO: webpack

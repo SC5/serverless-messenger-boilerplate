@@ -41,3 +41,6 @@ jspm_packages
 
 # Secrets
 .env
+
+# webpack
+dist
