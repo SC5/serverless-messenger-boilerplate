@@ -59,13 +59,13 @@ Following steps are slightly modified version of https://wit.ai/docs/quickstart
 
 The serverless-mocha-plugin module is included in the boilerplate. You can invoke tests locally with
 
-1. serverless invoke test (for all test)
-2. serverless invoke test -f facebookBot (to run only the facebookBot tests)
-3. serverless invoke test -f withAiHandler (to run only the witAiHandler tests)
+1. `serverless invoke test` (for all test)
+2. `serverless invoke test -f facebookBot` (to run only the facebookBot tests)
+3. `serverless invoke test -f withAiHandler` (to run only the witAiHandler tests)
 
 Implement the test cases for your bot to test/witAiHandler.js.
 By default, the tests are run silently (not forwarded to Messenger). If you want to run full tests, 
-comment out the row ´process.env.SILENT=1;´ from the tests test/*.js. 
+comment out the row `process.env.SILENT=1;` from the tests test/*.js. 
 
 ## Final Touch
 
