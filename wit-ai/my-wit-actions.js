@@ -1,5 +1,4 @@
 const moment = require('moment');
-const weather = require('./weather');
 
 const actions = {
   getTime: data => new Promise((resolve) => {
