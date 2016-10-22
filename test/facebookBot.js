@@ -81,7 +81,7 @@ describe('Facebook bot service', () => {
         if (err) {
           return done(err);
         }
-        let message = response[0] || {};
+        const message = response[0] || {};
         expect(message.TopicArn).to.match(/witAiTopic/);
         expect(message.Message).to.match(/What time is it/);
         done();
@@ -92,23 +92,23 @@ describe('Facebook bot service', () => {
       const snsEvent = {
         id: Math.round(Math.random()*10000),
         updated: Date.now(),
-        recipient: { 
+        recipient: {
           id: process.env.FACEBOOK_ID_FOR_TESTS,
-          name: 'John Smith' 
+          name: 'John Smith'
         },
-        message: { text: "Testing Messenger via SNS"},
+        message: { text: 'Testing Messenger via SNS'},
         stage: 'dev'
       };
 
       wrapped.run({ Records:
-        [ { EventSource: 'aws:sns',
+        [{ EventSource: 'aws:sns',
             EventVersion: '1.0',
             EventSubscriptionArn: 'arn:aws:sns:us-east-1:869231578214:sc5-serverless-messenger-bot-witAiTopic-dev:9752702a-cfd3-4711-b0c1-eda9f5f87635',
             Sns: {
               Subject: 'SUBJECT',
               Message: JSON.stringify(snsEvent,null)
             }
-        } ] 
+        }]
       }, (err, response) => {
         if (err) {
           return done(err);
@@ -118,9 +118,9 @@ describe('Facebook bot service', () => {
         } else {
           expect(snsEvent.recipient.id).to.equal(response.recipient_id);
         }
-        done();
+        return done();
       });
-    });    
+    });
   });
 });
 
