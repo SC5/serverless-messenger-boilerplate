@@ -1,7 +1,7 @@
 'use strict';
 
 const request = require('request-promise');
-const session = require('./session.js');
+const session = require('../lib/session.js');
 const witAi = require('../wit-ai/wit-ai.js');
 const messageQueue = require('../lib/messageQueue.js');
 

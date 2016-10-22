@@ -2,7 +2,7 @@
 
 const Wit = require('node-wit').Wit;
 const myActions = require('./my-wit-actions');
-const session = require('../facebook-bot/session.js');
+const session = require('../lib/session.js');
 
 /**
  * Handles wit.ai integration
