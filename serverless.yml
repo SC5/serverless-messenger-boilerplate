@@ -29,7 +29,9 @@ provider:
 
 package:
   exclude:
-    - test
+    - test/**
+    - .git/**
+    - docs/**
 
 functions:
   facebookBot: 
@@ -91,5 +93,6 @@ resources:
 
 plugins:
   - serverless-mocha-plugin
+  - serverless-webpack
 
 # TODO: webpack
