@@ -1,4 +1,6 @@
-# Serverless Messenger Bot Boilerplate
+# Serverless Messenger Bot Boilerplate by ![SC5 logo](https://logo.sc5.io/images/sc5logo-red-inverted-100x43.png) 
+
+
 
 **The Objective**
 
@@ -70,3 +72,8 @@ comment out the row ´process.env.SILENT=1;´ from the tests test/*.js.
 1. Run `serverless deploy`
 2. Open Messenger and search you bot
 3. Now you can converse with your bot
+
+## License
+
+Copyright (c) 2016 [SC5](http://sc5.io/), licensed for users and contributors under MIT license.
+https://github.com/SC5/serverless-messenger-boilerplate/blob/master/LICENSE
