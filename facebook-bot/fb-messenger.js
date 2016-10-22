@@ -97,8 +97,6 @@ function receiveOptIn(event) {
 function receiveMessage(event) {
   if (process.env.WIT_AI_TOKEN) {
     const topicName = [process.env.SERVERLESS_PROJECT, 'witAiTopic', process.env.SERVERLESS_STAGE].join('-');
-    console.log('Forward:');
-    console.log(event);
     return messageQueue.sendMessage(topicName, {
       message: event
     });
