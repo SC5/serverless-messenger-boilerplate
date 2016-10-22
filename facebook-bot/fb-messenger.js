@@ -2,9 +2,12 @@
 
 const request = require('request-promise');
 const session = require('../lib/session.js');
-const witAi = require('../wit-ai/wit-ai.js');
 const messageQueue = require('../lib/messageQueue.js');
 
+/**
+ * Sends generic message to recipient
+ * @param recipientId
+ */
 function sendGenericMessage(recipientId) {
   const messageData = {
     attachment: {
@@ -96,9 +99,11 @@ function receiveOptIn(event) {
  */
 function receiveMessage(event) {
   if (process.env.WIT_AI_TOKEN) {
-    const topicName = [process.env.SERVERLESS_PROJECT, 'witAiTopic', process.env.SERVERLESS_STAGE].join('-');
-    console.log('Forward:');
-    console.log(event);
+    const topicName = [
+      process.env.SERVERLESS_PROJECT,
+      'witAiTopic',
+      process.env.SERVERLESS_STAGE
+    ].join('-');
     return messageQueue.sendMessage(topicName, {
       message: event
     });
@@ -110,9 +115,14 @@ function receiveMessage(event) {
   return null;
 }
 
+/**
+ * Handles other messages
+ * @param event
+ * @returns {Promise}
+ */
 function receiveOtherEvent(event) {
-  return new Promise((resolveMessage, rejectMessage) => {
-    resolveMessage({
+  return new Promise((resolve) => {
+    resolve({
       type: 'unhandled',
       event
     });
@@ -150,7 +160,7 @@ function receiveEvent(event) {
   return new Promise((success, failure) => {
     const userId = event.sender.id;
     session.readSession(userId.toString())
-    .then((sessionData) => {
+      .then((sessionData) => {
         const eventData = Object.assign({}, event, sessionData);
         if (eventData.postback) {
           receivePostback(eventData).then(success, failure);
@@ -160,12 +170,12 @@ function receiveEvent(event) {
           receiveMessage(eventData).then(success, failure);
         } else {
           receiveOtherEvent(eventData).then(success, failure);
-        } 
-    })
-    .catch(error => {
-      console.log('ERROR:' + error);
-      failure(error);
-    })
+        }
+      })
+      .catch((error) => {
+        console.log('ERROR (receiveEvent):', error);
+        failure(error);
+      });
   });
 }
 
@@ -175,9 +185,9 @@ function receiveEvent(event) {
  * @returns {Promise.<TResult>}
  */
 function receiveEvents(entriesData) {
-  return new Promise((success,failure) => {
+  return new Promise((resolve, reject) => {
     const entries = entriesData || [];
-    let events = [];
+    const events = [];
     entries.forEach((entry) => {
       const messaging = entry.messaging || [];
       messaging.forEach((event) => {
@@ -185,15 +195,17 @@ function receiveEvents(entriesData) {
       });
     });
     Promise.all(events)
-    .then(responses => {
-      return success(responses);
-    })
-    .catch(error => {
-      failure(error);
-    });
+    .then(responses => resolve(responses))
+    .catch(error => reject(error));
   });
 }
 
+/**
+ * Verifies bot to Facebook
+ * @param verifyToken
+ * @param challenge
+ * @returns {*}
+ */
 function verify(verifyToken, challenge) {
   if (verifyToken === process.env.FACEBOOK_BOT_VERIFY_TOKEN) {
     return Promise.resolve({ response: challenge });
@@ -202,19 +214,17 @@ function verify(verifyToken, challenge) {
   return Promise.reject(new Error('400 Bad Token'));
 }
 
-module.exports.verify = (event, cb) =>
-  verify(event.query['hub.verify_token'], event.query['hub.challenge'])
-    .then(response => cb(null, response))
-    .then(null, err => cb(err));
-
-module.exports.receive = (event, cb) =>
-  receiveEvents(event.body.entry || [])
-    .then(response => {
-      cb(null, response)
-    })
-    .then(null, (err) => {
-      console.log('Error:', err);
-      cb(null, 'Error:', err);
-    });
-
-module.exports.sendMessage = sendMessage;
+module.exports = {
+  sendMessage,
+  verify: (event, cb) =>
+    verify(event.query['hub.verify_token'], event.query['hub.challenge'])
+      .then(response => cb(null, response))
+      .catch(err => cb(err)),
+  receive: (event, cb) =>
+    receiveEvents(event.body.entry || [])
+      .then(response => cb(null, response))
+      .catch((err) => {
+        console.log('Error:', err);
+        return cb(null, 'Error:', err);
+      })
+};
