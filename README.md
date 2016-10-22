@@ -1,17 +1,17 @@
 # Serverless Messenger Bot Boilerplate
 
-_WORK IN PROGRESS_
-
 **The Objective**
 
-[TBD] Create a Facebook Messenger chatbot that returns the weather.
+Create a Facebook Messenger chatbot
 
 ![Objective chart](https://raw.githubusercontent.com/SC5/serverless-messenger-boilerplate/master/docs/serverless-messenger-bot.png)
 
 1. User sends message from Facebook Messenger to Facebook Messenger API which forwards it to the AWS API Gateway
-2. AWS API Gateway triggers Lambda function that forwards message to wit.ai which processes it and returns context
-3. Lambda function runs action that requests weather information from Open Weather Map and processes response
-4. Lambda sends message to the Facebook Messenger API which forwards it to user
+2. AWS API Gateway triggers Lambda function facebookBot which sends the message forward to the SNS topic witAiTopic
+3. Lambda function witAiHandler, which subscribes to the witAiTopic SNS topic, receives the message, forwards it to wit.ai, processes actions required by the bot (e.g. fetch data from 3rd party services) and posts the response to the SNS topic fbMessengerTopic
+that forwards message to wit.ai which processes it and returns context
+4. Lambda function facebookBot subscribes to the fbMessenger topic. It receives the message sent by witAiHandler and forwards it the the Messenger Platform
+5. User receives the response to the message
 
 ## Boilerplate Installation
 
@@ -28,8 +28,8 @@ _WORK IN PROGRESS_
 2. Go to the App Dashboard and under Product Settings and setup webhook by clicking `Setup Webhooks`
   * Callback URL -> url from step 4
   * Verify Token -> from step 3
-  * Select Subscription fields `message_deliveries`, `messages`, `messaging_optins`, and `messaging_postbacks`
-  * [TBD] flowchart of verification process?
+  * Select Subscription field `messages` (select `message_deliveries`, `messaging_optins`, and `messaging_postbacks` only if you plan to implement functionality related to opt-ins, delivery / read receipts or postbacks)
+  * At this stage, the application is available only for developers and testers. The application needs to be approved by Facebook for public access
 3. Click `Verify and Save`
 4. In the Token Generation section, select the page created in step 5 and copy the generated token
 5. In Webhooks section, select page created in step 5 to be the one that subscribes the webhooks
@@ -37,7 +37,6 @@ _WORK IN PROGRESS_
 
 More detailed instructions for Facebook Messenger platform configuration can be found from https://developers.facebook.com/docs/messenger-platform/quickstart/
 
-[TBD] Should it be tested at this point?
 - Run `serverless deploy`
 - Open Facebook page created in step 1 and send message "Hello" to it
 
@@ -49,51 +48,25 @@ Following steps are slightly modified version of https://wit.ai/docs/quickstart
 2. Click + icon located in top menu to create a new app
 3. Type in app name and description
 4. If you wish you can change language and data privacy
-5. Select _Create App_
-6. Select _Create a story_
-7. Type "What’s the weather in London tomorrow?" in the "User says" field and press Enter
-8. Click on the "Value" dropdown next to `intent` and type "weather", then Enter
-9. Click Add a new entity, then select `wit/location`, then highlight "London" in the sentence
-10. Click again on Add a new entity, then select `wit/datetime` and highlight "tomorrow" in the sentence
-11. Click Bot executes, click on func... and type "getWeather"
-12. Click Updates context keys with... and type `temperature && description && datetime`
-13. Click Bot sends and type "The weather in {location} {datetime} will be {description} with temperature of {temperature}°C."
-14. Select "Save Story" on then top of the page
-15. Test the bot -> "What’s the weather in London tomorrow?"
-16. Click on the branch icon next to forecast in the story
-17. Type `temperature && description` in the context-key field
-18. Click Bot sends and type "The weather in {location} is {description} with temperature of {temperature}°C."
-20. Click again on the branch icon next to forecast in the story
-21. Type `missingLocation` in the context-key field
-22. Click Bot sends and type "Where?"
-23. Click User says and type "in Paris". Wit should normally detect the location entity
-24. Click on the bookmark icon next to your getForecast action, and type "getWeather", then Enter
-25. Click on Jump and select the getWeather bookmark you just created above
-26. Select "Save Story" on then top of the page
-27. Test the bot -> "What’s the weather in London?" and "What’s the weather?"
-28. Select settings
-29. Copy App ID
-30. Paste token to `.env` file as `WIT_AI_TOKEN`
+5. Select settings
+6. Copy App ID
+7. Paste token to `.env` file as `WIT_AI_TOKEN`
+8. Implement wit.ai flow
 
-## Open Weather Map Configuration
+## Testing
 
-1. Register to Open Weather Map https://home.openweathermap.org/users/sign_up
-2. Click "Hello username" in the top menu bar
-3. Click "Api Keys" -tab
-4. Type in key name in "Create key" / "Name" input field and press "Create"
-5. Copy the created token
-6. Paste token to `.env` file as `WEATHER_API_TOKEN`
+The serverless-mocha-plugin module is included in the boilerplate. You can invoke tests locally with
+
+1. serverless invoke test (for all test)
+2. serverless invoke test -f facebookBot (to run only the facebookBot tests)
+3. serverless invoke test -f withAiHandler (to run only the witAiHandler tests)
+
+Implement the test cases for your bot to test/witAiHandler.js.
+By default, the tests are run silently (not forwarded to Messenger). If you want to run full tests, 
+comment out the row ´process.env.SILENT=1;´ from the tests test/*.js. 
 
 ## Final Touch
 
 1. Run `serverless deploy`
 2. Open Messenger and search you bot
-3. Now you can ask if your bot knows the weather
-
-
-
-_TODO_
-
-1. Session Store using DynamoDB
-2. Hook to wit.ai
-3. Mechanism for handling requests based on context from Wit.ai and generating response to user
+3. Now you can converse with your bot
