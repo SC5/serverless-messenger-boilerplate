@@ -35,7 +35,7 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
       .then(ctx => session.writeSession({ id: event.id, updated: event.updated, context: ctx }))
       .catch(error => rejectMessage(error));
   } else {
-    rejectMessage('wit ai failed');
+    rejectMessage('Missing sender / message in '+ JSON.stringify(event, null, 2));
   }
 });
 

@@ -97,8 +97,11 @@ function receiveOptIn(event) {
 function receiveMessage(event) {
   if (process.env.WIT_AI_TOKEN) {
     const topicName = [process.env.SERVERLESS_PROJECT, 'witAiTopic', process.env.SERVERLESS_STAGE].join('-');
-
-    return messageQueue.sendMessage(topicName, event);
+    console.log('Forward:');
+    console.log(event);
+    return messageQueue.sendMessage(topicName, {
+      message: event
+    });
   } else if (event.sender && event.sender.id && event.message && event.message.text) {
     return sendTextMessage(event.sender.id, {
       text: 'Hello! I should converse with Wit.ai but I do not have a key!'
