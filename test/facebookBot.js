@@ -17,7 +17,7 @@ const liveFunction = {
 const wrapped = lambdaWrapper.wrap(mod, {handler: 'handler'});
 
 // Do not actually send messages
-//process.env.SILENT=1;
+process.env.SILENT=1;
 
 describe('Facebook bot service', () => {
   before((done) => {
@@ -81,7 +81,6 @@ describe('Facebook bot service', () => {
         if (err) {
           return done(err);
         }
-        console.log(response);
         let message = response[0] || {};
         expect(message.TopicArn).to.match(/witAiTopic/);
         expect(message.Message).to.match(/What time is it/);
@@ -114,113 +113,15 @@ describe('Facebook bot service', () => {
         if (err) {
           return done(err);
         }
-        expect(snsEvent.recipient.id).to.equal(response.recipient_id);
+        if (process.env.SILENT) {
+          expect(snsEvent.recipient.id).to.equal(response.recipient.id);
+        } else {
+          expect(snsEvent.recipient.id).to.equal(response.recipient_id);
+        }
         done();
       });
     });    
   });
 });
 
-if (0) {
-describe('Weather bot', () => {
-  describe('Messaging', () => {
-
-    it('Tests current time', (done) => {
-      wrapped.run({
-        method: 'POST',
-        stage: 'dev',
-        body: {
-          entry: [
-            {
-              messaging: [{
-                sender: {
-                  id: process.env.FACEBOOK_ID_FOR_TESTS
-                },
-                message: {
-                  text: 'What time is it?'
-                }
-              }]
-            }
-          ]
-        }
-      }, (err, response) => {
-        // console.log(err, response);
-        done(err);
-      });
-    });
-
-    it('Tests current weather', (done) => {
-      wrapped.run({
-        method: 'POST',
-        stage: 'dev',
-        body: {
-          entry: [
-            {
-              messaging: [{
-                sender: {
-                  id: process.env.FACEBOOK_ID_FOR_TESTS
-                },
-                message: {
-                  text: 'What is the weather?'
-                }
-              }]
-            }
-          ]
-        }
-      }, (err, response) => {
-        // console.log(err, response);
-        done(err);
-      });
-    });
-
-    it('Tests current weather in London', (done) => {
-      wrapped.run({
-        method: 'POST',
-        stage: 'dev',
-        body: {
-          entry: [
-            {
-              messaging: [{
-                sender: {
-                  id: process.env.FACEBOOK_ID_FOR_TESTS
-                },
-                message: {
-                  text: 'How will be the weather in London?'
-                }
-              }]
-            }
-          ]
-        }
-      }, (err, response) => {
-        // console.log(err, response);
-        done(err);
-      });
-    });
-
-    it('Tests tomorrows forecast in London', (done) => {
-      wrapped.run({
-        method: 'POST',
-        stage: 'dev',
-        body: {
-          entry: [
-            {
-              messaging: [{
-                sender: {
-                  id: process.env.FACEBOOK_ID_FOR_TESTS
-                },
-                message: {
-                  text: 'How will be the weather in London tomorrow?'
-                }
-              }]
-            }
-          ]
-        }
-      }, (err, response) => {
-        // console.log(err, response);
-        done(err);
-      });
-    });
-  });
-});
-}
 

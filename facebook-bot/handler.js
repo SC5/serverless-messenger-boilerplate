@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 const messenger = require('./fb-messenger.js');
-const messageQueue = require('../lib/messagequeue.js');
+const messageQueue = require('../lib/messageQueue.js');
 
 /**
  * Adds extra environmental variables
@@ -26,9 +26,9 @@ module.exports.handler = (event, context, cb) => {
       if (process.env.SILENT) {
         return cb(null, event);
       }
+      
       messenger.sendMessage(event.recipient.id, message)
       .then(result => {
-        console.log()
         cb(null, result);
       })
       .catch(error => {

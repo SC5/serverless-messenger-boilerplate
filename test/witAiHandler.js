@@ -40,6 +40,7 @@ describe('witAiHandler', () => {
 
   it('Send text to Wit.ai (via SNS) and receive a response', (done) => {
     const snsEvent = {
+      stage: 'dev',
       id: Math.round(Math.random()*10000),
       updated: Date.now(),
       sender: { 
@@ -62,6 +63,7 @@ describe('witAiHandler', () => {
 describe('Weather bot', () => {
   it('Tests current weather', (done) => {
     wrapped.run(buildMessage({
+      stage: 'dev',
       id: Math.round(Math.random()*10000),
       updated: Date.now(),
       sender: { 
@@ -73,13 +75,16 @@ describe('Weather bot', () => {
       if (err) {
         return done(err);
       }
-      expect(response.text).to.match(/Where are you/);
+      let snsMsg = JSON.parse(response.Message);
+      expect(snsMsg.recipient.id).to.equal(process.env.FACEBOOK_ID_FOR_TESTS);
+      expect(snsMsg.message.text).to.match(/Where are you/);
       done();
     });
   });
 
   it('Tests current weather in London', (done) => {
     wrapped.run(buildMessage({
+      stage: 'dev',
       id: Math.round(Math.random()*10000),
       updated: Date.now(),
       sender: { 
@@ -91,14 +96,17 @@ describe('Weather bot', () => {
       if (err) {
         return done(err);
       }
-      expect(response.text).to.match(/London/);
-      expect(response.text).to.match(/temperature/);
+      let snsMsg = JSON.parse(response.Message);
+      expect(snsMsg.recipient.id).to.equal(process.env.FACEBOOK_ID_FOR_TESTS);
+      expect(snsMsg.message.text).to.match(/London/);
+      expect(snsMsg.message.text).to.match(/temperature/);
       done();
     });
   });
 
   it('Tests tomorrows forecast in London', (done) => {
     wrapped.run(buildMessage({
+      stage: 'dev',
       id: Math.round(Math.random()*10000),
       updated: Date.now(),
       sender: { 
@@ -110,9 +118,11 @@ describe('Weather bot', () => {
       if (err) {
         return done(err);
       }
-      expect(response.text).to.match(/London/);
-      expect(response.text).to.match(/temperature/);
-      expect(response.text).to.match(/tomorrow/);
+      let snsMsg = JSON.parse(response.Message);
+      expect(snsMsg.recipient.id).to.equal(process.env.FACEBOOK_ID_FOR_TESTS),
+      expect(snsMsg.message.text).to.match(/London/);
+      expect(snsMsg.message.text).to.match(/temperature/);
+      expect(snsMsg.message.text).to.match(/tomorrow/);
       done();
     });
   });
