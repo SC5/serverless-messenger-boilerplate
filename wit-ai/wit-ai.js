@@ -59,6 +59,7 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
       };
 
       if (process.env.SPEECH_FUNCTION) {
+        // function to invoke https://github.com/laardee/wit-ai-speech
         lambda.invoke(params, (err, data) => {
           if (err) {
             rejectMessage(err);
