@@ -31,6 +31,10 @@ provider:
       - SNS:ListTopics
       - SNS:Publish
       Resource: arn:aws:sns:${self:provider.region}:*:*
+    - Effect: Allow
+      Action:
+      - lambda:InvokeFunction
+      Resource: arn:aws:lambda:${self:provider.region}:*:*
 package:
   exclude:
     - test/**
