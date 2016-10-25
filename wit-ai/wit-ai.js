@@ -13,7 +13,8 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
     const sessionId = `${event.id}-${event.updated}`;
     const actions = {
       send: (request, response) => new Promise((resolve) => {
-        resolveMessage(response);
+        const recipient = { id: event.sender.id };
+        resolveMessage({ message: response, recipient });
         resolve();
       }),
       debugContext: data => new Promise((resolve) => {
@@ -35,7 +36,7 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
       .then(ctx => session.writeSession({ id: event.id, updated: event.updated, context: ctx }))
       .catch(error => rejectMessage(error));
   } else {
-    rejectMessage('Missing sender / message in '+ JSON.stringify(event, null, 2));
+    rejectMessage(`Missing sender / message in ${JSON.stringify(event, null, 2)}`);
   }
 });
 
