@@ -35,10 +35,10 @@ const init = event => new Promise((resolveMessage, rejectMessage) => {
 
     client.runActions(sessionId, event.message.text, Object.assign({}, event.context))
       .then(ctx => session.writeSession({ id: event.id, updated: event.updated, context: ctx }))
-      .catch(error => {
+      .catch((error) => {
         console.log('wit.ai error', error);
         resolveMessage({
-          message: { 
+          message: {
             text: error
           },
           recipient
