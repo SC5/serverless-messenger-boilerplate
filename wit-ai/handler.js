@@ -1,16 +1,9 @@
 'use strict';
 
 require('dotenv').config();
+require('../lib/helpers').setEnvVars();
 const witAi = require('./wit-ai.js');
 const messageQueue = require('../lib/messageQueue.js');
-
-/**
- * Adds extra environmental variables
- * @param event
- */
-function setEnvVars(event) {
-  process.env.SERVERLESS_STAGE = event.stage;
-}
 
 module.exports.handler = (event, context, cb) => {
   if (!process.env.WIT_AI_TOKEN) {
@@ -19,7 +12,6 @@ module.exports.handler = (event, context, cb) => {
   if (event.Records && event.Records[0] && event.Records[0].Sns) {
     return messageQueue.getMessage(event)
       .then((message) => {
-        setEnvVars(message);
         return witAi(message);
       })
       .then((message) => {
