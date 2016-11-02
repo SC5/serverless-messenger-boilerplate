@@ -1,7 +1,6 @@
 'use strict';
 
-require('dotenv').config();
-require('../lib/helpers').setEnvVars();
+require('../lib/envVars').config();
 const messenger = require('./fb-messenger.js');
 const messageQueue = require('../lib/messageQueue.js');
 
