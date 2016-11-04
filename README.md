@@ -15,7 +15,7 @@ _WORK IN PROGRESS_
 
 ## Boilerplate Installation
 
-1. Run `serverless install --url https://github.com/SC5/serverless-messenger-boilerplate.git`
+1. Run `serverless install --url https://github.com/SC5/serverless-messenger-boilerplate`
 2. Run `npm install`
 3. Rename example.env to .env and fill in `FACEBOOK_BOT_VERIFY_TOKEN`
 4. Run `serverless deploy` then copy the GET endpoint url
