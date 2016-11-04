@@ -4,7 +4,7 @@
 
 **The Objective**
 
-Create a Facebook Messenger chatbot
+Create a Facebook Messenger chatbot using Serverless Framework to build backend for the service.
 
 ![Objective chart](https://raw.githubusercontent.com/SC5/serverless-messenger-boilerplate/master/docs/serverless-messenger-bot.png)
 
@@ -65,7 +65,7 @@ The serverless-mocha-plugin module is included in the boilerplate. You can invok
 
 Implement the test cases for your bot to test/witAiHandler.js.
 By default, the tests are run silently (not forwarded to Messenger). If you want to run full tests, 
-comment out the row `process.env.SILENT=1;` from the tests test/*.js. 
+comment out the row `process.env.SILENT = 1;` from the tests test/*.js. 
 
 ## Final Touch
 
