@@ -25,12 +25,12 @@ provider:
       - dynamodb:GetItem
       - dynamodb:PutItem
       - dynamodb:DeleteItem
-      Resource: arn:aws:dynamodb:$${opt:region, self:provider.region}:*:*
+      Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:*
     - Effect: Allow
       Action:
       - SNS:ListTopics
       - SNS:Publish
-      Resource: arn:aws:sns:$${opt:region, self:provider.region}:*:*
+      Resource: arn:aws:sns:${opt:region, self:provider.region}:*:*
 package:
   exclude:
     - test/**
