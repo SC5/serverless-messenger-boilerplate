@@ -21,7 +21,7 @@
   "dependencies": {
     "dotenv": "^2.0.0",
     "moment": "^2.15.1",
-    "node-wit": "git+https://github.com/laardee/node-wit.git",
+    "node-wit-legacy": "git+https://github.com/laardee/node-wit-legacy.git",
     "request": "^2.75.0",
     "request-promise": "^4.1.1"
   },
@@ -29,8 +29,7 @@
     "aws-sdk": "^2.6.3",
     "copy-webpack-plugin": "^3.0.1",
     "json-loader": "^0.5.4",
-    "serverless-mocha-plugin": "git+https://github.com/SC5/serverless-mocha-plugin.git/#1.0",
-    "serverless-plugin-write-env-vars": "^1.0.1",
+    "serverless-mocha-plugin": "^1.0.3",
     "serverless-webpack": "^1.0.0-rc.2"
   },
   "scripts": {

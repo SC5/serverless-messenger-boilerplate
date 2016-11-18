@@ -1,6 +1,6 @@
 'use strict';
 
-const Wit = require('node-wit').Wit;
+const Wit = require('node-wit-legacy').Wit;
 const myActions = require('./my-wit-actions');
 const session = require('../lib/session.js');
 
