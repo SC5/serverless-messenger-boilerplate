@@ -25,12 +25,12 @@ provider:
       - dynamodb:GetItem
       - dynamodb:PutItem
       - dynamodb:DeleteItem
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:*
+      Resource: arn:aws:dynamodb:${opt:region, self:provider.region}:*:*
     - Effect: Allow
       Action:
       - SNS:ListTopics
       - SNS:Publish
-      Resource: arn:aws:sns:${self:provider.region}:*:*
+      Resource: arn:aws:sns:${opt:region, self:provider.region}:*:*
 package:
   exclude:
     - test/**
@@ -87,15 +87,6 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: ${self:service}-sessions-${opt:stage, self:provider.stage}
-    
-#    WitAiTopic:
-#      Type: AWS::SNS::Topic
-#      Properties:
-#        TopicName: ${self:service}-witAi-${opt:stage, self:provider.stage}
-#    FBMessengerTopic:
-#      Type: AWS::SNS::Topic
-#      Properties:
-#        TopicName: ${self:service}-fbMessenger-${opt:stage, self:provider.stage}
 
 plugins:
   - serverless-mocha-plugin
