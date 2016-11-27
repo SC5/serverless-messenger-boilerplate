@@ -1,6 +1,5 @@
 'use strict';
 
-require('../lib/envVars').config();
 const witAi = require('./wit-ai.js');
 const messageQueue = require('../lib/messageQueue.js');
 

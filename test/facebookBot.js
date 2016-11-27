@@ -17,7 +17,7 @@ const liveFunction = {
 const wrapped = lambdaWrapper.wrap(mod, {handler: 'handler'});
 
 // Do not actually send messages
-process.env.SILENT=1;
+process.env.SILENT = 1;
 
 describe('Facebook bot service', () => {
   before((done) => {
