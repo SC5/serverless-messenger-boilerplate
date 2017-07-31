@@ -1,6 +1,7 @@
 # Serverless Messenger Bot Boilerplate by ![SC5 logo](https://logo.sc5.io/images/sc5logo-red-inverted-100x43.png) 
 
-
+## Facebook has sunset stories in Wit.ai. This boilerplate will no longer function due to this ##
+More at https://wit.ai/blog/2017/07/27/sunsetting-stories
 
 **The Objective**
 
